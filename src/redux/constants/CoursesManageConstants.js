@@ -1,0 +1,1 @@
+export const LOAD_COURSE_LIST ='LOAD_COURSE_LIST';
