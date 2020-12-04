@@ -32,8 +32,12 @@
             width: calc(100% - 30px);
             max-width: 500px;
             display: block;
+            opacity: .9;
             &::placeholder {
                 color: white;
+            }
+            &:hover{
+                opacity: 1;
             }
         }
     }

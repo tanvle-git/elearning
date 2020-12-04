@@ -1,0 +1,39 @@
+footer {
+    margin-top: 42px;
+    background-color: white;
+    border-top: 1px solid #dee2e6;
+    z-index: 10;
+}
+
+.companyInfo {
+    padding: 0 42px;
+    margin-top: 42px;
+    color: #a2a2a2;
+    line-height: 2;
+}
+
+.companyInfo div img {
+    width: 50px;
+}
+
+.companyInfo p {
+    margin: 0;
+}
+/* .companyInfo div {
+    margin: auto;
+} */
+.copyright {
+    padding: 15px;
+    color: #a2a2a2;
+}
+
+hr {
+    margin: 0;
+    margin-top: 42px;
+}
+
+*:focus{
+    // box-shadow: 0 0 0pt 1pt white;
+    outline: none;
+}
+

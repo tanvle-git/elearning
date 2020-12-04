@@ -1,132 +1,15 @@
-.item {
-    width: 175px !important;
-    height: 275px;
-    background-color: red;
-    border-radius: 20px;
-    margin: auto;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
-    margin: 4px;
-}
 
 .TopCourses .container {
     background-color: white;
-    padding: 45px 7px;
+    padding: 30px 7px 15px 7px;
     border-radius: 20px;
     box-shadow: 0px 10px 20px #0000001a;
     margin-top: 30px;
 
     .title {
         color: #645a53;
-        font-size: 2.2rem;
+        font-size: 1.75rem;
         font-weight: 700;
         margin-top: 0px;
     }
-}
-
-.badge {
-    top: 0;
-    position: absolute;
-    height: 30px;
-    width: 80px;
-    background-color: tomato;
-    display: inline-flex;
-    font-size: 1rem;
-    border-radius: 20px;
-    margin: 10px;
-    color: white;
-    font-weight: 500;
-    align-items: center;
-    justify-content: space-around;
-}
-
-.itemContent {
-    width: 100%;
-    color: white;
-    position: absolute;
-    bottom: 0;
-    padding: 15px;
-    background-color: #303030e6;
-    font-weight: 400;
-    text-align: center;
-    height: 8rem;
-    p {
-        font-size: 1.25rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-}
-
-.item:hover .courseOverlay {
-    opacity: 1;
-    cursor: pointer;
-}
-
-.courseOverlay {
-    opacity: 0;
-    transition: 0.5s;
-    padding: 10px;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    background-color: #303030e6;
-    color: white;
-    font-size: 1rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    letter-spacing: 2%;
-    line-height: 1.6;
-    top: 0;
-    p {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 10;
-        -webkit-box-orient: vertical;
-    }
-}
-
-.courseOverlay p {
-    height: calc(100% - 20px);
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-
-.item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.itemContent p {
-    margin: 0;
-}
-.outline {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-
-    border: solid 1px #b1aca9;
-}
-
-.rate {
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 5px;
-}
-
-img.star {
-    width: 15px !important;
-    height: 15px;
-    /* display: inline !important; */
-    position: static;
-    display: inline-block;
-    margin: 0 2px;
 }

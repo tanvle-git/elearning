@@ -4,12 +4,15 @@ header {
     width: 100vw;
     backdrop-filter: blur(40px);
     z-index: 1000;
+    top: 0;
+    left: 0;
     div {
         display: flex;
         align-items: center;
         justify-content: space-between;
         height: 60px;
         .leftItems {
+            display: flex;
             .brandName {
                 margin-left: 15px;
                 font-size: 1.5rem;
@@ -18,4 +21,8 @@ header {
             }
         }
     }
+    a:hover{
+        text-decoration: none;
+    }
 }
+
