@@ -4,7 +4,7 @@ import './TopCourses.scss'
 import { connect, useSelector, useDispatch } from 'react-redux';
 import { getCourseListAction} from '../../redux/actions/CoursesManageActions';
 
-export default function TopCourses(props) {
+export default function TopCourses() {
 
     const dispatch = useDispatch();
     useEffect(() => { dispatch(getCourseListAction()) }, [])

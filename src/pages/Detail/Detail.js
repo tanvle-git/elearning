@@ -63,8 +63,9 @@ export default function Detail(props) {
                     <div className="cardDetail">
                         <img src={courseDetail.hinhAnh} alt={courseDetail.tenKhoaHoc} width="100%" />
 
-                        <SubInfo luotXem={courseDetail.luotXem} soLuongHocVien={courseDetail.soLuongHocVien}/>
+                        
                         <div className="d-flex flex-column" style={{ margin: ' 7.5px 30px 15px 30px' }}>
+                        <SubInfo luotXem={courseDetail.luotXem} soLuongHocVien={courseDetail.soLuongHocVien}/>
                             <SolidButton color={"red"} size={"medium"}>Ghi danh ngay</SolidButton>
                             <OutlineButton color={"red"} size={"medium"}>Thêm vào yêu thích</OutlineButton>
                             <OutlineButton color={"red"} size={"medium"}>Chia sẻ</OutlineButton>

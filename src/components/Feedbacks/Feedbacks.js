@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 export default function Feedbacks() {
 
     const feedbacks = useSelector(state => state.FeedbackReducer.feedback);
-    console.log(feedbacks);
+    // console.log(feedbacks);
 
     const feedbacksRender = () => {
         return feedbacks.map((feedback, index) => {

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { DOMAIN, TOKEN, USER_LOGIN } from '../../ultity/WebConfig';
 import {LOAD_COURSE_LIST,LOAD_COURSE_CATEGORY,GET_COURSE_DETAIL} from '../constants/CoursesManageConstants';
 
+
 export const getCourseListAction = () => {
     //Thay vì return về object => middleware thunk cho phép mình return về 1 function có tham số là hàm dispatch
     return async dispatch => {

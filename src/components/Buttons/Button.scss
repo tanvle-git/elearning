@@ -19,3 +19,45 @@ button{
 }
 
 
+.brownOutlineBtn{
+    border: 1px solid #645a53;
+    color: #645a53;
+}
+
+.brownSolidBtn{
+    border: 1px solid #645a53;
+    background-color: #645a53;
+}
+.redOutlineBtn{
+    border: 1px solid #fd4646;
+    color: #fd4646;
+}
+
+.redSolidBtn{
+    border: 1px solid #fd4646;
+    background-color: #fd4646;
+}
+
+.bigBtn{
+    font-size: 1.25rem;
+    height: 70px;
+    padding: 15px;
+}
+
+.smallBtn{
+    font-size: 1rem;
+    height: 50px;
+    padding: 30px;
+}
+
+.mediumBtn{
+    font-size: 1rem;
+    height: 35px;
+    padding: 30px;
+}
+
+.simpleBtn{
+    color: #645a53;
+    a{
+    color: #645a53;}
+}

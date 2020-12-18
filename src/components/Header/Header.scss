@@ -4,25 +4,115 @@ header {
     width: 100vw;
     backdrop-filter: blur(40px);
     z-index: 1000;
+    padding: 0;
     top: 0;
     left: 0;
-    div {
+    div.container {
         display: flex;
         align-items: center;
         justify-content: space-between;
         height: 60px;
-        .leftItems {
-            display: flex;
-            .brandName {
-                margin-left: 15px;
-                font-size: 1.5rem;
-                font-weight: bold;
-                color: #645a53;
-            }
-        }
     }
-    a:hover{
+    a:hover {
         text-decoration: none;
     }
 }
 
+.leftItems {
+    display: flex;
+    justify-content: center;
+}
+.brandName {
+    margin-left: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #645a53;
+}
+.modal-title {
+    color: #645a53;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0px 10px 20px #0000001a;
+    padding: 30px 20px;
+    label {
+        line-height: unset;
+    }
+    img {
+        fill: #645a53;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.modal-backdrop {
+    background-color: #ffffff80;
+    backdrop-filter: blur(20px);
+}
+
+.modal-backdrop.show {
+    opacity: 1;
+}
+
+.modal-content form input {
+    height: 30px;
+    border: none;
+    flex-grow: 1;
+}
+.inputGroup {
+    border-bottom: 1px solid #a2a2a2;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+.modal-content label {
+    margin-left: 10px;
+    color: #645a53;
+}
+
+.modal-content p {
+    text-align: center;
+    color: #645a53;
+    margin-top: 21px;
+}
+
+.modal-dialog {
+    // height: 100%;
+}
+
+// .basic-navbar-nav{
+//     justify-content: space-between;
+// }
+
+// .navbar-expand .navbar-collapse {
+//     flex-direction: row;
+// }
+
+.rightItems {
+    display: flex;
+    align-items: center;
+    &>*{
+        margin-left: 1rem;
+    }
+}
+
+.verLine {
+    border-left: 1px solid #645a5380;
+    height: 1.5rem;
+}
+
+.userPicture{
+    width: 40px;
+    height: 40px;
+    line-height: 38px;
+    font-size: 1.5rem;
+    color: white;
+    background-color: #8CC63F;
+    border-radius: 50%;
+    text-align: center;
+}
