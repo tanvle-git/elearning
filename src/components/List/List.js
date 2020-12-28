@@ -5,18 +5,14 @@ import Pagination from 'react-bootstrap/Pagination';
 import SubInfo from '../SubInfo/SubInfo';
 import { selectPage } from '../../redux/actions/UserSettingActions';
 import { NavLink } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function List(props) {
+
     const dispatch = useDispatch();
-    // let currentPage = 0;
-    console.log('props',props);
     const active = useSelector(state => state.UserSettingReducer.currentPage);
-    // const [active, setActive] = useState(0);
-    // const [currentPage, setCurrentPage] = useState(0);
-    // let active = 0;
     let items = [];
     let numberOfPages = Math.ceil(props.list.length / props.itemperpage);
-
     const splitPages = () => {
         const pages = [];
         for (let index = 0; index < numberOfPages; index++) {
@@ -24,23 +20,17 @@ export default function List(props) {
         }
         return pages;
     }
-
     // useEffect(() => {
-    //     console.log(currentPage,' - ', active);
-    //     currentPage === active? setActive(0) : console.log('ko doi');
-    // })
-    useEffect(() => {
-        console.log('Hàm gọi sau lần render đầu tiên');
-        return () => {
-            console.log('Hàm định nghĩa bên trong đây sẽ được gọi cuối cùng thay willUnmount');
-        }
-    }, [])
-    useEffect(() => {
-        console.log('Hàm gọi mỗi khi number (state) thay đổi sau khi render ! thay didUpdate ')
-    }, [0])
+    //     console.log('Hàm gọi sau lần render đầu tiên');
+    //     return () => {
+    //         console.log('Hàm định nghĩa bên trong đây sẽ được gọi cuối cùng thay willUnmount');
+    //     }
+    // }, [])
+    // useEffect(() => {
+    //     console.log('Hàm gọi mỗi khi number (state) thay đổi sau khi render ! thay didUpdate ')
+    // }, [0])
 
     const changePage = (number) => {
-        // setCurrentPage(number);
         dispatch(selectPage(number));
     }
 
@@ -55,31 +45,80 @@ export default function List(props) {
             </Pagination.Item>,
         );
     }
-    return (
-        <div>
-            {
-                pages[active]?.map((course, index) => {
-                    return <div className="courseItem" key={index}>
-                        <NavLink to={`/detail/${course.maKhoaHoc}`}>
-                        <div className="d-flex  align-items-center">
-                            <img className="courseImg" src={course.hinhAnh} alt={course.tenKhoaHoc} />
-                            <div className="d-flex flex-column" style={{ width: '100%', marginLeft: 30 }}>
-                                <h2 className="smallTitle courseName">{course.tenKhoaHoc}</h2>
-                                <p className="courseDescription">{course.moTa}</p>
-                                <div className='align-self-end d-none d-sm-flex justify-content-between' style={{ width: 210 }}>
-                                    <SubInfo luotXem={course.luotXem} soLuongHocVien={course.soLuongHocVien} />
+
+    const addDefaultSrc = (ev) => {
+        ev.target.src = './img/imgNotFound.jpg'
+    }
+    switch (props.type) {
+        case "CourseList":
+            return (
+                <div>
+                    {pages[active]?.map((course, index) => {
+                        return <div className="courseItem" key={index}>
+
+                            <div className="d-flex  align-items-center">
+                                <img className="courseImg" src={course.hinhAnh} alt={course.tenKhoaHoc} onError={addDefaultSrc} />
+                                <div className="d-flex flex-column" style={{ width: '100%', marginLeft: 30 }}>
+                                    <NavLink to={`/detail/${course.maKhoaHoc}`}>
+                                        <h2 className="smallTitle courseName">{course.tenKhoaHoc}</h2>
+                                    </NavLink>
+                                    <p className="courseDescription">{course.moTa}</p>
+                                    <div className='align-self-end d-flex justify-content-end' style={{ width: '100%' }}>
+                                        <div className="d-none d-sm-flex" style={{ maxWidth: '325px', flexGrow: 1 }}>
+                                            <SubInfo luotXem={course.luotXem} soLuongHocVien={course.soLuongHocVien} />
+                                        </div>
+                                        {props.adminButtonRender('edit', course)}
+                                        {props.adminButtonRender('delete', course.maKhoaHoc)}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </NavLink>
+                    })
+                    }
+                    <div className=' d-flex justify-content-center'>
+                        <Pagination className='justify-content-center'>{items}</Pagination>
+                        <br />
                     </div>
-                })
-            }
+                </div>
+            )
+        case "UserList":
+            console.log(props.list);
+            return (
+                <div style={{ margin: '0 30px' }}>
+                    <table className="table text-center" style={{ tableLayout: 'fixed' }}>
 
-            <div className='justify-content-center'>
-                <Pagination className='justify-content-center'>{items}</Pagination>
-                <br />
-            </div>
-        </div>
-    )
+                        <thead>
+                            <tr>
+                                <th scope="col" >Tài khoản</th>
+                                <th scope="col" className="d-none d-sm-table-cell"  >Họ tên</th>
+                                <th scope="col" className="d-none d-md-table-cell" >Liên hệ</th>
+                                <th scope="col" >...</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pages[active]?.map((user, index) => {
+                                return <tr key={index} style={{ color: user.maLoaiNguoiDung === "GV" ? '#fd4646' : '#645a53' }}>
+                                    <th scope="row" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.taiKhoan}</th>
+                                    <td className="d-none d-sm-table-cell" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.hoTen}</td>
+                                    <td className="d-none d-md-table-cell" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}<br />{user.soDt}</td>
+                                    <td className="" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        <div className="d-flex justify-content-center">
+                                            {props.adminButtonRender('edit', user)}
+                                            {props.adminButtonRender('delete', user.taiKhoan)}
+                                        </div>
+                                    </td>
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+                    <div className='d-flex justify-content-center'>
+                        <Pagination className='justify-content-center'>{items}</Pagination>
+                        <br />
+                    </div>
+                </div>
+            )
+        default:
+            return "Có gì đó sai sai!"
+    }
+
 }

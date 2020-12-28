@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { DOMAIN, TOKEN, USER_LOGIN } from '../../ultity/WebConfig';
-import { SIGN_IN, SIGN_UP, GET_USER_INFO } from '../constants/UserConstants';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { SIGN_IN, SIGN_UP, GET_USER_INFO, SIGN_OUT, CHANGE_USER_INFO, CHANGE_PASSWORD, JOIN_COURSE, CANCEL_COURSE, GET_USER_LIST, GET_USER_TYPE,SELECT_USER_EDIT } from '../constants/UserConstants';
+import swal from 'sweetalert';
+import { setModal } from '../../redux/actions/UserSettingActions';
 
 export const signUpAction = (userSignUp) => {
-    return async wait => {
+    return async dispatch => {
         try {
             let { data, status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/DangKy',
@@ -19,20 +20,19 @@ export const signUpAction = (userSignUp) => {
                 }
             });
             if (status === 200) {
-                const userLogin = {
-                    username: data.taiKhoan,
-                    password: data.matKhau
-                };
-                console.log('thành công đăng KÝ');
+                swal({ text: "Đăng ký thành công", icon: "success", button: false });
+                dispatch({
+                    type: SIGN_UP
+                });
             }
         } catch (err) {
-            console.log(err.response.data);
+            swal({ text: err.response.data, icon: "error", button: false });
         }
     }
 }
+
 export const signInAction = (userLogin) => {
     return async dispatch => {
-        console.log('aaa');
         try {
             let { data, status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/DangNhap',
@@ -47,32 +47,323 @@ export const signInAction = (userLogin) => {
                 //Sau khi gọi api => dispatch lên redux 
                 dispatch({
                     type: SIGN_IN,
-                    userLogin: data
+                    userLogin: data,
+                    password: userLogin.password
                 });
-                //Lưu vào localstorage
-                localStorage.setItem(USER_LOGIN, JSON.stringify(data));
-
-                localStorage.setItem(TOKEN, data.accessToken);
-                console.log('thành công đăng nhập');
             }
         } catch (err) {
-            console.log(err.response.data);
+            swal({ text: err.response.data, icon: "warning", button: false });
         }
     }
 }
 
-export const getUserInfo = () => {
-    let bearer = 'Bearer ' + JSON.parse(localStorage.getItem('accessToken'));
-    axios({
-        url: DOMAIN + 'api/QuanLyNguoiDung/ThongTinTaiKhoan',
+export const getUserInfoAction = () => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    // console.log(bearer);
+    let username = JSON.parse(localStorage.getItem('userLogin'));
+    // console.log(username);
+    return dispatch => axios({
+        url: DOMAIN + '/api/QuanLyNguoiDung/ThongTinTaiKhoan',
         method: 'post',
-        header: {
+        headers: {
             Authorization: bearer
         },
         data: {
-            taiKhoan: 'testing001',
+            taiKhoan: username.taiKhoan,
         }
-    });
-    //Sau khi lấy dữ liệu từ backend về sử dụng hàm dispatch đưa dữ liệu lên reducer
-    // console.log(data, status);
+    }).then(res => {
+        if (res.status === 200) {
+            console.log(res.data.chiTietKhoaHocGhiDanh);
+            dispatch({
+                type: GET_USER_INFO,
+                userInfo: res.data
+            });
+        } else {
+            console.log(res.status, ' ', res.statusText);
+        }
+    }).catch(err => {
+        console.log(err);
+    })
+        ;
+}
+
+export const signOutAction = () => {
+    return dispatch => {
+        const action = {
+            type: SIGN_OUT,
+        };
+        dispatch(action);
+    }
+}
+
+export const changeUserInfo = (userInfo) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung',
+                method: 'PUT',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan: userInfo.username,
+                    hoTen: userInfo.fullName,
+                    email: userInfo.email,
+                    soDT: userInfo.phoneNumber,
+                    maLoaiNguoiDung: "HV",
+                    matKhau: userInfo.password,
+                    maNhom: "GP12"
+                }
+            });
+            if (status === 200) {
+                let { taiKhoan, hoTen, email, soDt } = data;
+                let soDT = soDt;
+                dispatch({
+                    type: CHANGE_USER_INFO,
+                    userInfo: { taiKhoan, hoTen, email, soDT }
+                });
+                //Lưu vào localstorage
+                let currentLocalUserLogin = JSON.parse(localStorage.getItem(USER_LOGIN));
+                currentLocalUserLogin = { ...currentLocalUserLogin, taiKhoan, hoTen, email, soDT }
+                console.log('current', currentLocalUserLogin);
+                localStorage.setItem(USER_LOGIN, JSON.stringify(currentLocalUserLogin));
+                swal({ text: "Cập nhật thành công", icon: "success", button: false });
+            }
+        } catch (err) {
+            console.log(err.response);
+            swal({ text: err.response.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const changePasswordAction = (userInfo) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung',
+                method: 'PUT',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    soDT: userInfo.phoneNumber,
+                    hoTen: userInfo.fullName,
+                    email: userInfo.email,
+                    taiKhoan: userInfo.username,
+                    matKhau: userInfo.newPassword,
+                    maLoaiNguoiDung: "HV",
+                    maNhom: "GP12"
+                }
+            });
+            if (status === 200) {
+                console.log(userInfo);
+                swal({ text: "Cập nhật thành công", icon: "success", button: false });
+                dispatch({
+                    type: CHANGE_PASSWORD,
+                    matKhau: userInfo.newPassword
+                });
+            }
+        } catch (err) {
+            console.log(err.response);
+            swal({ text: err.response.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const joinCourseAction = (courseID, username) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyKhoaHoc/DangKyKhoaHoc',
+                method: 'post',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan: username,
+                    maKhoaHoc: courseID
+                }
+            });
+            console.log('data', data)
+            if (status === 200) {
+                swal({ text: data, icon: "success", button: false });
+                dispatch({
+                    type: JOIN_COURSE,
+                    course: courseID
+                })
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const cancelCourseAction = (courseID, username) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyKhoaHoc/HuyGhiDanh',
+                method: 'post',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan: username,
+                    maKhoaHoc: courseID
+                }
+            });
+            console.log('data', data)
+            if (status === 200) {
+                swal({ text: data, icon: "success", button: false });
+                dispatch({
+                    type: CANCEL_COURSE,
+                    course: courseID
+                })
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const getUserList = () => {
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=GP12',
+                method: 'GET',
+            });
+            console.log(data);
+            if (status === 200) {
+                dispatch({
+                    type: GET_USER_LIST,
+                    userList: data
+                })
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const getUserType = () => {
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachLoaiNguoiDung',
+                method: 'GET',
+            });
+            console.log(data);
+            if (status === 200) {
+                dispatch({
+                    type: GET_USER_TYPE,
+                    userType: data
+                })
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+}
+
+export const createUserAction = (newUserInfo) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    let { taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email } = newUserInfo
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/ThemNguoiDung',
+                method: 'POST',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email,
+                    maNhom: 'GP12'
+                }
+            });
+            if (status === 200) {
+
+                swal({ text: 'Thành công', icon: "success", button: false });
+                dispatch(getUserList());
+                dispatch(setModal({ modal: 'newUser', value: false }));
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+
+}
+
+export const deleteUserAction = (taiKhoan) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return dispatch => swal({
+        title: "Bạn muốn xóa tài khoản " + taiKhoan,
+        text: "Thao tác này sẽ không thể hoàn lại được!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                axios({
+                    url: DOMAIN + '/api/QuanLyNguoiDung/XoaNguoiDung?TaiKhoan=' + taiKhoan,
+                    method: 'DELETE',
+                    headers: {
+                        Authorization: bearer
+                    }
+                }).then(res => {
+                    console.log(res);
+                    swal(res.data, {
+                        icon: "success", button: false 
+                    });
+                    dispatch(getUserList());
+                })
+                .catch(err => {
+                    console.log(err);
+                    swal({ text: err.response?.data, icon: "error", button: false });
+                })
+            }
+        });
+}
+
+export const selectUserEditAction = (user) => {
+    console.log('action',user);
+    return {
+        type: SELECT_USER_EDIT,
+        user,
+    }
+}
+
+export const editUserAction = (newUserInfo) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    let { taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email } = newUserInfo
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung',
+                method: 'PUT',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email,
+                    maNhom: 'GP12'
+                }
+            });
+            if (status === 200) {
+
+                swal({ text: 'Thành công', icon: "success", button: false });
+                dispatch(getUserList());
+                dispatch(setModal({ modal: 'editUser', value: false }));
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+
 }

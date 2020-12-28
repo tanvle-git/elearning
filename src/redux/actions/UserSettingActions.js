@@ -1,30 +1,32 @@
-import { SET_LIST_SETTING, RESET_LIST_SETTING, SELECT_PAGE } from '../constants/UserSettingConstants'
+import { SET_LIST_SETTING, RESET_LIST_SETTING, SET_USER_LIST_SETTING, SELECT_PAGE, SET_SIGN_IN_MODAL, SET_SIGN_UP_MODAL, SET_MODAL } from '../constants/UserSettingConstants'
 
 export const setListSetting = (key, value) => {
-    return dispatch => {
-        const action = {
-            type: SET_LIST_SETTING,
-            data: {key, value}
-        };
-        console.log(action);
-        dispatch(action);
+    return {
+        type: SET_LIST_SETTING,
+        data: { key, value }
+    }
+}
+export const setUserListSetting = (key, value) => {
+    return {
+        type: SET_USER_LIST_SETTING,
+        data: { key, value }
     }
 }
 
 export const resetListSetting = () => {
-    return dispatch => {
-        const action = {
-            type: RESET_LIST_SETTING,
-        };
-        dispatch(action);
+    return {
+        type: RESET_LIST_SETTING,
     }
 }
 export const selectPage = (value) => {
-    return dispatch => {
-        const action = {
-            type: SELECT_PAGE,
-            data: value,
-        };
-        dispatch(action);
+    return {
+        type: SELECT_PAGE,
+        data: value,
+    }
+}
+export const setModal = (data) => {
+    return {
+        type: SET_MODAL,
+        data
     }
 }

@@ -1,4 +1,85 @@
-.userCardProfile{
-    border-radius: 20px ;
+.userCardProfile {
+    border-radius: 20px;
     background-color: white;
+    overflow: hidden;
+    color: #645a53;
+    position: relative;
+    .signOutButton {
+        position: absolute;
+        z-index: 1;
+        height: 30px;
+        width: 30px;
+        right: 30px;
+        top: 1.5rem;
+        g {
+            fill: white;
+        }
+    }
+}
+
+@media screen and(max-width: 360px) {
+    .userCardProfile {
+        border-radius: 20px;
+        background-color: transparent;
+        .mainUserInfo {
+            padding-left: 15px;
+        }
+    }
+}
+
+.mainUserInfo {
+    padding-left: 45px;
+    line-height: 2.5;
+    padding-bottom: 1.5rem;
+    div {
+        font-size: 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        div:last-child {
+            font-weight: 500;
+        }
+        button {
+            min-width: 30px;
+            padding: 0px;
+            margin: 0px;
+            svg {
+                width: 25px;
+                margin-left: 1rem;
+                display: inline;
+            }
+            &:focus{
+                box-shadow: none;
+            }
+        }
+    }
+    .inputGroup {
+        height: 35px;
+        margin: 0;
+        input {
+            height: 35px;
+            padding-left: 15px;
+            background-color: transparent;
+            border: none;
+            font-weight: 500;
+        }
+    }
+}
+
+.subUserInfo {
+    line-height: 2.5;
+    background-color: #fd4646;
+    color: white;
+    text-align: right;
+    padding-bottom: 1.5rem;
+
+    padding-right: 45px;
+    // height: 100%;
+
+    div {
+        font-size: 1rem;
+    }
+}
+
+.userCardProfileParent {
+    min-height: calc(100vh - 305px - 42px - 80px);
 }

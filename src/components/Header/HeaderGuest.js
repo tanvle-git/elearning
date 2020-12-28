@@ -1,37 +1,48 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Header.scss'
-import '../Buttons/Button.scss'
-import Modal from 'react-bootstrap/Modal'
-import { signInAction, signUpAction } from '../../redux/actions/UserAction'
+import './Header.scss';
+import '../Buttons/Button.scss';
+import Modal from 'react-bootstrap/Modal';
+import { signInAction, signUpAction } from '../../redux/actions/UserAction';
+import {setModal} from '../../redux/actions/UserSettingActions';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Tooltip from 'react-bootstrap/Tooltip';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { Fragment } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown'
+import Dropdown from 'react-bootstrap/Dropdown';
 import { connect, useSelector, useDispatch } from 'react-redux';
 
 
 export default function HeaderGuest() {
 
+    const signInModal = useSelector(state => state.UserSettingReducer.modal.signIn);
+    const signUpModal = useSelector(state => state.UserSettingReducer.modal.signUp);
 
-    const [signInModal, setSignInModal] = useState(false);
-    const handleSignInClose = () => setSignInModal(false);
-    const handleSignInModal = () => setSignInModal(true);
-    const [signUpModal, setSignUpModal] = useState(false);
-    const handleSignUpClose = () => setSignUpModal(false);
-    const handleSignUpModal = () => setSignUpModal(true);
+    const handleSignInClose = () => dispatch(setModal({ modal:'signIn', value:false }));
+    const handleSignInModal = () => dispatch(setModal({ modal:'signIn', value:true }));
+    const handleSignUpClose = () => dispatch(setModal({ modal:'signUp', value:false }));
+    const handleSignUpModal = () => dispatch(setModal({ modal:'signUp', value:true }));
+
+
+    // const [signInModal, setSignInModal] = useState(false);
+    // const handleSignInClose = () => setSignInModal(false);
+    // const handleSignInModal = () => setSignInModal(true);
+    // const [signUpModal, setSignUpModal] = useState(false);
+    // const handleSignUpClose = () => setSignUpModal(false);
+    // const handleSignUpModal = () => setSignUpModal(true);
     const switchModal = () => {
-        setSignUpModal(!signUpModal);
-        setSignInModal(!signInModal);
+        dispatch(setModal({ modal:'signIn', value: !signInModal }));
+        dispatch(setModal({ modal:'signUp', value: !signUpModal }));
+        // setSignUpModal(!signUpModal);
+        // setSignInModal(!signInModal);
     }
 
     const dispatch = useDispatch();
 
     const signIn = (values) => {
         const { username, password } = values;
-        dispatch(signInAction({username, password}));
+        dispatch(signInAction({ username, password }));
     }
     const signUp = (values) => {
         const { phoneNumber, email, username, fullName, password } = values;
@@ -79,15 +90,15 @@ export default function HeaderGuest() {
 
     return (
         <Fragment>
-            <button className="brownOutlineBtn d-none d-md-block" onClick={handleSignUpModal} >Đăng ký</button>
-            <button className="brownSolidBtn  d-none d-md-block" onClick={handleSignInModal}>Đăng nhập</button>
+            <button className="brownOutlineBtn d-none d-sm-block" onClick={handleSignUpModal} >Đăng ký</button>
+            <button className="brownSolidBtn  d-none d-sm-block" onClick={handleSignInModal}>Đăng nhập</button>
             <Dropdown>
-                <Dropdown.Toggle className="d-block d-md-none" variant="outline-secondary" id="dropdown-basic">
+                <Dropdown.Toggle className="d-block d-sm-none" variant="outline-secondary" id="dropdown-basic">
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <Dropdown.Item  onClick={handleSignUpModal} >Đăng ký</Dropdown.Item>
-                    <Dropdown.Item  onClick={handleSignInModal} >Đăng nhập</Dropdown.Item>
+                    <Dropdown.Item onClick={handleSignUpModal} >Đăng ký</Dropdown.Item>
+                    <Dropdown.Item onClick={handleSignInModal} >Đăng nhập</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
             <Modal show={signUpModal} onHide={handleSignUpClose} centered size="sm">
@@ -99,7 +110,7 @@ export default function HeaderGuest() {
                         username: '',
                         fullName: '',
                         password: '',
-                        termsAndConditions: '',
+                        termsAndConditions: false,
                     }}
                     validationSchema={signUpSchema}
                     onSubmit={signUp}>
@@ -161,7 +172,7 @@ export default function HeaderGuest() {
                             </div>
 
                             <div className="d-flex">
-                                <Field type="checkbox" name="termsAndConditions" defaultValue="termsAndConditions" id="termsAndConditions" />
+                                <Field type="checkbox" name="termsAndConditions" id="termsAndConditions" />
                                 <label htmlFor="termsAndConditions" style={{ color: errors.termsAndConditions ? '#eb5757' : 'unset' }}> Tôi đồng ý với <b>điều khoản</b> và <b>điều kiện</b> sử dụng dịch vụ</label><br />
                             </div>
                             <div>
@@ -207,9 +218,6 @@ export default function HeaderGuest() {
                                         <img src="./img/error.svg" />
                                     </OverlayTrigger>}
                             </div>
-
-
-
                             <button className="brownSolidBtn" type="submit" style={{ width: '100%', margin: 0 }}>Đăng nhập</button>
                             <p>Chưa có tài khoản? <b onClick={switchModal}>Đăng ký</b></p>
                         </Form>)}

@@ -24,9 +24,10 @@ header {
 }
 .brandName {
     margin-left: 15px;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: bold;
     color: #645a53;
+    line-height: 38px;
 }
 .modal-title {
     color: #645a53;
@@ -59,10 +60,11 @@ header {
     opacity: 1;
 }
 
-.modal-content form input {
+.modal-content form input,.modal-content form textarea,.modal-content form select  {
     height: 30px;
     border: none;
     flex-grow: 1;
+    background-color: transparent;
 }
 .inputGroup {
     border-bottom: 1px solid #a2a2a2;
@@ -115,4 +117,23 @@ header {
     background-color: #8CC63F;
     border-radius: 50%;
     text-align: center;
+}
+
+.swal-modal{
+    background-color: #ffffff;
+    border-radius: 20px;
+    backdrop-filter: blur(40px);
+}
+
+.swal-text{
+    color: #645a53;
+}
+.swal-overlay{
+    background-color:rgba(0,0,0,.2);
+    
+    backdrop-filter: blur(5px);
+}
+
+.btn{
+    min-width: 50px;
 }

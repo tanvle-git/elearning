@@ -7,19 +7,17 @@ import '../Buttons/Button.scss'
 import HeaderGuest from './HeaderGuest'
 import { connect, useSelector, useDispatch } from 'react-redux';
 import HeaderNormalUser from './HeaderNormalUser';
+import HeaderAdminUser from './HeaderAdminUser';
 
 export default function Header() {
-    let userLogin = useSelector(state => state.UserReducer.userLogin);
-    console.log(userLogin);
+    let userInfo = useSelector(state => state.UserReducer.userInfo);
+    console.log(userInfo);
     const headerRender = () => {
-        switch (userLogin.maLoaiNguoiDung) {
+        switch (userInfo.maLoaiNguoiDung) {
             case 'HV':
-
                 return <HeaderNormalUser />
-
             case 'GV':
-                return 'GV';
-
+                return <HeaderAdminUser />;
             default:
                 return <HeaderGuest />
         }
