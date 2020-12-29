@@ -1,7 +1,7 @@
 import React from 'react'
 import Slider from "react-slick";
 import { NavLink } from 'react-router-dom';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import './SlickSlider.scss'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,7 +19,6 @@ export default function SlickSliders(props) {
         rows: 1,
         infinite: true,
         speed: 500,
-        // lazyLoad:'ondemand',
         slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
@@ -30,7 +29,6 @@ export default function SlickSliders(props) {
         cssEase: "linear",
         draggable: false,
         swipeToSlide:true,
-        // touchMove:false,
     }
     const coursesRender = () => {
         return props.courseList.filter(course => course.danhMucKhoaHoc.maDanhMucKhoahoc === (props.type === 'ALL'? course.danhMucKhoaHoc.maDanhMucKhoahoc : props.type)).map((course,index) => {
@@ -54,7 +52,6 @@ export default function SlickSliders(props) {
             </div>
         </NavLink>
         })
-        // console.log(props);
     }
     return (
         <Slider {...settings}>

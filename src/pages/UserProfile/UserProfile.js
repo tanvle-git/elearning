@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './UserProfile.scss'
 import { getUserInfoAction, signOutAction } from '../../redux/actions/UserAction'
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -10,12 +10,12 @@ import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { signInAction, signUpAction, changeUserInfo, changePasswordAction } from '../../redux/actions/UserAction'
+import { changeUserInfo, changePasswordAction } from '../../redux/actions/UserAction'
 
 export default function UserProfile() {
     const dispatch = useDispatch();
     const history = useHistory();
-
+    useEffect(() => { dispatch(getUserInfoAction()) }, [dispatch])
     const [passwordModal, setPasswordModal] = useState(false);
     const handlePasswordClose = () => setPasswordModal(false);
     const handlePasswordModal = () => setPasswordModal(true);
@@ -70,16 +70,13 @@ export default function UserProfile() {
     });
 
     const change = (values) => {
-        console.log(values);
         setCurrentView('view');
-        dispatch(changeUserInfo(values));
+        dispatch(changeUserInfo({...values,password:userInfo.matKhau}));
     }
 
     const changePassword = (values) => {
         handlePasswordClose();
-        console.log('đã khớp password: ', values);
         dispatch(changePasswordAction(values));
-        console.log('chưa lên action');
     }
 
     const renderInfo = () => {
@@ -151,7 +148,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.username)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                         </div>
@@ -164,7 +161,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.fullName)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                         </div>
@@ -177,7 +174,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.email)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                         </div>
@@ -190,7 +187,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.phoneNumber)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                         </div>
@@ -222,7 +219,7 @@ export default function UserProfile() {
                     <div className="col-lg-7 col-md-8 col-12 mainUserInfo">
                         {renderInfo()}
                     </div>
-                    <div className="col-1 d-none d-lg-block">
+                    <div className="col-1 d-none d-lg-block" style={{ padding: '15px' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 70 306" fill="none">
                             <g clipPath="url(#clip0)">
                                 <path d="M70 1.97419L70 0L0.0861053 -3.05603e-06L0.0861053 1.97419L70 1.97419Z" fill="black" />
@@ -294,7 +291,7 @@ export default function UserProfile() {
                         </svg>
                     </div>
 
-                    <div className="col-4 d-none d-md-flex subUserInfo justify-content-end align-items-end">
+                    <div className="col-4 d-none d-md-flex subUserInfo justify-content-end align-items-end" style={{ backgroundColor: userInfo.maLoaiNguoiDung === 'GV' ? '#fd4646' : '#645a53' }}>
                         <div >
                             <div className=" d-sm-none d-md-block">
                                 Loại tài khoản:
@@ -311,7 +308,7 @@ export default function UserProfile() {
             </div>
 
             <Modal show={passwordModal} onHide={handlePasswordClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đổi mật khẩu</h1><img src="./img/close.svg" onClick={handlePasswordClose} /></div>
+                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đổi mật khẩu</h1><img src="./img/close.svg" alt="close button" onClick={handlePasswordClose} /></div>
 
                 <Formik
                     initialValues={{
@@ -335,7 +332,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.currentPassword)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -345,7 +342,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.newPassword)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -355,7 +352,7 @@ export default function UserProfile() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.passwordConfirmation)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <button className="brownSolidBtn" type="submit" style={{ width: '100%', margin: 0 }}>Đổi mật khẩu</button>

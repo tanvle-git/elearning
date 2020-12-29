@@ -51,14 +51,6 @@ label {
         border-radius: 5px;
     }
 }
-// @media screen and (min-width: 576px) and (max-width: 768px) {
-//     .courseImg {
-//         width: 150;
-//         height: 225;
-//         object-fit: "cover";
-//         border-radius: 15;
-//     }
-// }
 
 button.icon {
     min-width: 30px;
@@ -66,10 +58,22 @@ button.icon {
     margin: 0px;
     svg {
         width: 25px;
-        margin-left: 1rem;
+        // margin-left: 1rem;
         display: inline;
     }
     &:focus {
         box-shadow: none;
+    }
+}
+
+
+form.searchForm{
+    border-bottom: 1px solid #645a53;
+    display: flex;
+    input{
+        width: 80%;
+        min-width: unset;
+        border: none;
+        display: block;
     }
 }

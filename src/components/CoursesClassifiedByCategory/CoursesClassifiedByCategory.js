@@ -1,20 +1,18 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import SlickSliders from '../SlickSilder/SlickSlider';
 import { Tabs, Tab } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getCourseCategoryAction } from '../../redux/actions/CoursesManageActions';
 import './CoursesClassifiedByCategory.scss'
-import { SolidButton } from '../Buttons/Button';
 import { NavLink } from 'react-router-dom';
 
-export default function CoursesClassifiedByCategory(props) {
+export default function CoursesClassifiedByCategory() {
 
     const dispatch = useDispatch();
-    useEffect(() => { dispatch(getCourseCategoryAction()) }, [])
+    useEffect(() => { dispatch(getCourseCategoryAction()) }, [dispatch])
     const category = useSelector(state => state.CoursesReducer.category);
     const courseList = useSelector(state => state.CoursesReducer.courses);
-
 
     const tabRender = () => {
         return <Tabs defaultActiveKey="0">
@@ -25,7 +23,6 @@ export default function CoursesClassifiedByCategory(props) {
             })}
         </Tabs>
     }
-
     return (
         <Fragment>
             <div className="coursesClassifiedByCategory">
@@ -36,7 +33,7 @@ export default function CoursesClassifiedByCategory(props) {
             </div>
             <div style={{ 'display': 'flex', 'justifyContent': 'space-around', 'marginTop': '30px' }} >
                 <NavLink to={'/all-course'}>
-                    <SolidButton color={"red"} size={"large"}>Xem toàn bộ {courseList.length}+ khóa học của chúng tôi!</SolidButton>
+                    <button className="redSolidBtn bigBtn">Xem toàn bộ {courseList.length}+ khóa học của chúng tôi!</button>
                 </NavLink>
             </div>
         </Fragment>

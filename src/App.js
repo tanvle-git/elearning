@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,19 +12,21 @@ import Footer from './components/Footer/Footer';
 import Detail from './pages/Detail/Detail';
 import CourseList from './pages/CourseList/CourseList';
 import { getCourseCategoryAction, getCourseListAction } from './redux/actions/CoursesManageActions';
-import { getUserInfoAction } from './redux/actions/UserAction'
+import { getUserInfoAction, getUserList, getUserType } from './redux/actions/UserAction'
 
 import UserProfile from './pages/UserProfile/UserProfile';
 import MyCourses from './pages/MyCourses/MyCourses';
 import UserList from './pages/UserList/UserList';
+import UserInfo from './pages/UserInfo/UserInfo';
 
 function App() {
   const dispatch = useDispatch();
-  useEffect(() => { dispatch(getCourseCategoryAction()) }, []);
-  useEffect(() => { dispatch(getCourseListAction()) }, []);
+  useEffect(() => { dispatch(getCourseCategoryAction()) }, [dispatch]);
+  useEffect(() => { dispatch(getCourseListAction('')) }, [dispatch]);
   const userInfo = useSelector(state => state.UserReducer.userInfo);
 
-  useEffect(() => { if (userInfo.taiKhoan) { dispatch(getUserInfoAction()) } }, []);
+  useEffect(() => { if (userInfo.taiKhoan) { dispatch(getUserInfoAction()) } }, [userInfo.taiKhoan,dispatch]);
+  useEffect(() => { if (userInfo.maLoaiNguoiDung === 'GV') { dispatch(getUserList()); dispatch(getUserType()) } }, [userInfo.maLoaiNguoiDung,dispatch]);
 
 
   return (
@@ -32,14 +34,15 @@ function App() {
       <div className="page-container">
         <Header />
         <div className="content-container">
-        <Switch>
-          <Route exact path='/home' component={Home} />
-          <Route exact path='/detail/:id' component={Detail} />
-          <Route exact path='/all-course' component={CourseList} />
-          <Route exact path='/user-list' component={UserList} />
-          <Route exact path='/profile' component={UserProfile} />
-          <Route exact path='/mycourse' component={MyCourses} />
-        </Switch>
+          <Switch>
+            <Route exact path='/home' component={Home} />
+            <Route exact path='/detail/:id' component={Detail} />
+            <Route exact path='/user/:id' component={UserInfo} />
+            <Route exact path='/all-course' component={CourseList} />
+            <Route exact path='/user-list' component={UserList} />
+            <Route exact path='/profile' component={UserProfile} />
+            <Route exact path='/mycourse' component={MyCourses} />
+          </Switch>
         </div>
         <Footer />
       </div>

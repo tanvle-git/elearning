@@ -1,38 +1,39 @@
 import axios from 'axios';
-import { DOMAIN, TOKEN, USER_LOGIN } from '../../ultity/WebConfig';
-import { LOAD_COURSE_LIST, LOAD_COURSE_CATEGORY, GET_COURSE_DETAIL, CREATE_COURSE, DELETE_COURSE, SELECT_COURSE_EDIT, EDIT_COURSE } from '../constants/CoursesManageConstants';
+import { DOMAIN } from '../../ultity/WebConfig';
+import { LOAD_COURSE_CATEGORY, GET_COURSE_DETAIL, DELETE_COURSE, SELECT_COURSE_EDIT, GET_USER_COURSES_DETAIL, LOAD_COURSE_LIST } from '../constants/CoursesManageConstants';
 import swal from 'sweetalert';
 import { setModal } from '../../redux/actions/UserSettingActions';
 
-export const getCourseListAction = () => {
-    // Thay vì return về object => middleware thunk cho phép mình return về 1 function có tham số là hàm dispatch
-    return async dispatch => {
-        const { data } = await axios({
-            url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12',
-            method: 'GET'
-        });
-        //Sau khi lấy dữ liệu từ backend về sử dụng hàm dispatch đưa dữ liệu lên reducer
-        const action = {
-            type: LOAD_COURSE_LIST,
-            courseList: data,
-        };
-        dispatch(action);
-    }
-    // return dispatch => axios({
-    //     url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12',
-    //     method: 'GET'
-    // })
-    //     .then(res => {
-    //         console.log(res);
-    //         const action = {
-    //             type: LOAD_COURSE_LIST,
-    //             courseList: res.data,
-    //         };
-    //         dispatch(action);
-    //     })
-    //     .catch(err => {
-    //         console.log(err);
-    //     })
+// export const getCourseListAction = () => {
+//     return async dispatch => {
+//         const { data } = await axios({
+//             url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12',
+//             method: 'GET'
+//         });
+//         const action = {
+//             type: LOAD_COURSE_LIST,
+//             courseList: data,
+//         };
+//         dispatch(action);
+//     }
+// }
+
+export const getCourseListAction = (key) => {
+    return async dispatch => axios({
+        url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12&tenKhoaHoc=' + key,
+        method: 'GET'
+    }).then(res => {
+        if (res.status === 200) {
+            dispatch({
+                type: LOAD_COURSE_LIST,
+                courseList: res.data,
+                key,
+            });
+        }
+    }).catch(err =>{
+        swal({ text: err.response?.data, icon: "error", button: false });
+        console.log(err.response.data);
+    })
 }
 
 
@@ -51,13 +52,11 @@ export const getCourseCategoryAction = () => {
 }
 
 export const getCourseDetail = (id) => {
-    //Thay vì return về object => middleware thunk cho phép mình return về 1 function có tham số là hàm dispatch
     return async dispatch => {
         const { data } = await axios({
             url: DOMAIN + `/api/QuanLyKhoaHoc/LayThongTinKhoaHoc?maKhoaHoc=${id}`,
             method: 'GET'
         });
-        //Sau khi lấy dữ liệu từ backend về sử dụng hàm dispatch đưa dữ liệu lên reducer
         const action = {
             type: GET_COURSE_DETAIL,
             courseDetail: data
@@ -69,12 +68,8 @@ export const getCourseDetail = (id) => {
 export const createCourseAction = (newCourseInfo) => {
     let bearer = 'Bearer ' + localStorage.getItem('accessToken');
     let { biDanh, danhGia, hinhAnh, maDanhMucKhoaHoc, luotXem, maKhoaHoc, moTa, tenKhoaHoc, maNhom, taiKhoanNguoiTao } = newCourseInfo;
-    let data = {
-        biDanh, danhGia, hinhAnh: hinhAnh.name, maDanhMucKhoaHoc, luotXem, maKhoaHoc, moTa, tenKhoaHoc, maNhom, taiKhoanNguoiTao
-    }
     let today = new Date();
     let time = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-    console.log('action', data);
     let frm = new FormData();
     frm.append('file', hinhAnh);
     frm.append('tenKhoaHoc', tenKhoaHoc);
@@ -104,16 +99,14 @@ export const createCourseAction = (newCourseInfo) => {
             data: frm
         }).then(res1 => {
             swal({ text: 'Khóa học thêm thành công', icon: "success", button: false });
-            dispatch(getCourseListAction());
+            dispatch(getCourseListAction(''));
             dispatch(setModal({ modal: 'newCourse', value: false }));
 
         }).catch(err => {
-            console.log(err);
             swal({ text: err.response?.data, icon: "error", button: false });
 
         })
     }).catch(err => {
-        console.log(err.response.data);
         swal({ text: err.response?.data, icon: "error", button: false });
     });
 }
@@ -136,26 +129,23 @@ export const deleteCourseAction = (ID) => {
                         Authorization: bearer
                     }
                 }).then(res => {
-                    console.log(res);
                     swal(res.data, {
-                        icon: "success", button: false 
+                        icon: "success", button: false
                     });
                     const action = {
                         type: DELETE_COURSE,
                     };
-                    dispatch(getCourseListAction());
+                    dispatch(getCourseListAction(''));
                     dispatch(action);
                 })
-                .catch(err => {
-                    console.log(err);
-                    swal({ text: err.response?.data, icon: "error", button: false });
-                })
+                    .catch(err => {
+                        swal({ text: err.response?.data, icon: "error", button: false });
+                    })
             }
         });
 }
 
 export const selectCourseEditAction = (course) => {
-    console.log('action',course);
     return {
         type: SELECT_COURSE_EDIT,
         course,
@@ -164,7 +154,7 @@ export const selectCourseEditAction = (course) => {
 
 export const editCourseAction = (course) => {
     let bearer = 'Bearer ' + localStorage.getItem('accessToken');
-    let { biDanh, danhGia, hinhAnh, maDanhMucKhoaHoc, luotXem, maKhoaHoc, moTa, tenKhoaHoc, maNhom, taiKhoanNguoiTao ,ngayTao} = course;
+    let { biDanh, danhGia, hinhAnh, maDanhMucKhoaHoc, luotXem, maKhoaHoc, moTa, tenKhoaHoc, maNhom, taiKhoanNguoiTao, ngayTao } = course;
     let frm = new FormData();
     frm.append('file', hinhAnh);
     frm.append('tenKhoaHoc', tenKhoaHoc);
@@ -194,16 +184,61 @@ export const editCourseAction = (course) => {
             data: frm
         }).then(res1 => {
             swal({ text: 'Khóa học cập nhật thành công', icon: "success", button: false });
-            dispatch(getCourseListAction());
+            dispatch(getCourseListAction(''));
             dispatch(setModal({ modal: 'editCourse', value: false }));
 
         }).catch(err => {
-            console.log(err);
             swal({ text: err.response?.data, icon: "error", button: false });
 
         })
     }).catch(err => {
-        console.log(err.response.data);
+        swal({ text: err.response?.data, icon: "error", button: false });
+    });
+}
+
+export const getUserCoursesDetailAction = (taiKhoan) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return dispatch => axios({
+        url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachKhoaHocChuaGhiDanh?TaiKhoan=' + taiKhoan,
+        method: 'POST',
+        headers: {
+            Authorization: bearer
+        },
+    }).then(res => {
+        const haveNotJoined = res.data;
+        axios({
+            url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachKhoaHocChoXetDuyet',
+            method: 'POST',
+            headers: {
+                Authorization: bearer
+            },
+            data: {
+                taiKhoan: taiKhoan,
+            }
+        }).then(res1 => {
+            const pendingCourses = res1.data;
+            axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachKhoaHocDaXetDuyet',
+                method: 'POST',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan: taiKhoan,
+                }
+            }).then(res2 => {
+                const haveJoined = res2.data;
+                dispatch({
+                    type: GET_USER_COURSES_DETAIL,
+                    haveNotJoined, pendingCourses, haveJoined
+                })
+            }).catch(err => {
+                swal({ text: err.response?.data, icon: "error", button: false });
+            });
+        }).catch(err => {
+            swal({ text: err.response?.data, icon: "error", button: false });
+        });
+    }).catch(err => {
         swal({ text: err.response?.data, icon: "error", button: false });
     });
 }

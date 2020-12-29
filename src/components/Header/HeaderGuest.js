@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.scss';
 import '../Buttons/Button.scss';
 import Modal from 'react-bootstrap/Modal';
 import { signInAction, signUpAction } from '../../redux/actions/UserAction';
-import {setModal} from '../../redux/actions/UserSettingActions';
+import { setModal } from '../../redux/actions/UserSettingActions';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { Fragment } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 export default function HeaderGuest() {
@@ -19,23 +19,13 @@ export default function HeaderGuest() {
     const signInModal = useSelector(state => state.UserSettingReducer.modal.signIn);
     const signUpModal = useSelector(state => state.UserSettingReducer.modal.signUp);
 
-    const handleSignInClose = () => dispatch(setModal({ modal:'signIn', value:false }));
-    const handleSignInModal = () => dispatch(setModal({ modal:'signIn', value:true }));
-    const handleSignUpClose = () => dispatch(setModal({ modal:'signUp', value:false }));
-    const handleSignUpModal = () => dispatch(setModal({ modal:'signUp', value:true }));
-
-
-    // const [signInModal, setSignInModal] = useState(false);
-    // const handleSignInClose = () => setSignInModal(false);
-    // const handleSignInModal = () => setSignInModal(true);
-    // const [signUpModal, setSignUpModal] = useState(false);
-    // const handleSignUpClose = () => setSignUpModal(false);
-    // const handleSignUpModal = () => setSignUpModal(true);
+    const handleSignInClose = () => dispatch(setModal({ modal: 'signIn', value: false }));
+    const handleSignInModal = () => dispatch(setModal({ modal: 'signIn', value: true }));
+    const handleSignUpClose = () => dispatch(setModal({ modal: 'signUp', value: false }));
+    const handleSignUpModal = () => dispatch(setModal({ modal: 'signUp', value: true }));
     const switchModal = () => {
-        dispatch(setModal({ modal:'signIn', value: !signInModal }));
-        dispatch(setModal({ modal:'signUp', value: !signUpModal }));
-        // setSignUpModal(!signUpModal);
-        // setSignInModal(!signInModal);
+        dispatch(setModal({ modal: 'signIn', value: !signInModal }));
+        dispatch(setModal({ modal: 'signUp', value: !signUpModal }));
     }
 
     const dispatch = useDispatch();
@@ -83,7 +73,8 @@ export default function HeaderGuest() {
     });
 
     const renderTooltip = (props) => (
-        <Tooltip id="button-tooltip" {...props}>
+        <Tooltip id="button-tooltip" >
+             {/* <Tooltip id="button-tooltip" {...props} > why we need do that? */}
             {props}
         </Tooltip>
     );
@@ -102,7 +93,7 @@ export default function HeaderGuest() {
                 </Dropdown.Menu>
             </Dropdown>
             <Modal show={signUpModal} onHide={handleSignUpClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đăng ký</h1><img src="./img/close.svg" onClick={handleSignUpClose} /></div>
+                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đăng ký</h1><img src="./img/close.svg" alt="close button" onClick={handleSignUpClose} /></div>
                 <Formik
                     initialValues={{
                         phoneNumber: '',
@@ -123,7 +114,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.phoneNumber)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg"  alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
 
@@ -134,7 +125,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.email)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
 
@@ -145,7 +136,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.fullName)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
 
@@ -156,7 +147,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.username)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
 
@@ -167,7 +158,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.password)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
 
@@ -186,7 +177,7 @@ export default function HeaderGuest() {
             </Modal>
 
             <Modal show={signInModal} onHide={handleSignInClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đăng nhập</h1><img src="./img/close.svg" onClick={handleSignInClose} /></div>
+                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đăng nhập</h1><img src="./img/close.svg" alt="close button" onClick={handleSignInClose} /></div>
 
                 <Formik
                     initialValues={{
@@ -205,7 +196,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.username)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -215,7 +206,7 @@ export default function HeaderGuest() {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.password)}>
-                                        <img src="./img/error.svg" />
+                                        <img src="./img/error.svg" alt="error warning"/>
                                     </OverlayTrigger>}
                             </div>
                             <button className="brownSolidBtn" type="submit" style={{ width: '100%', margin: 0 }}>Đăng nhập</button>

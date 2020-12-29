@@ -1,6 +1,6 @@
 import React from 'react'
 import { Fragment } from 'react'
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import './Header.scss'
 import '../Buttons/Button.scss'
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -13,7 +13,6 @@ export default function HeaderAdminUser() {
     const fullName = useSelector(state => state.UserReducer.userInfo.hoTen);
     var nameFilter = fullName.match(/\b\w/g) || [];
     nameFilter = (nameFilter.pop() || '').toUpperCase();
-    console.log(nameFilter);
 
     const link = (linkTo) => {
         switch (linkTo) {
@@ -35,7 +34,6 @@ export default function HeaderAdminUser() {
                 break;
         }
     }
-
     return (
         <Fragment>
             <span className="simpleBtn d-none d-md-block"><NavLink to='/all-course'>Quản lý khóa học</NavLink></span>
@@ -47,7 +45,6 @@ export default function HeaderAdminUser() {
             <Dropdown>
                 <Dropdown.Toggle className="d-block d-md-none" variant="outline-secondary" id="dropdown-basic">
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
                     <Dropdown.Item onClick={() => link('all-course')}>Quản lý khóa học</Dropdown.Item>
                     <Dropdown.Item onClick={() => link('user-list')}>Quản lý người dùng</Dropdown.Item>

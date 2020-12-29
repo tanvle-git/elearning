@@ -6,8 +6,6 @@ import { useSelector } from 'react-redux';
 export default function Feedbacks() {
 
     const feedbacks = useSelector(state => state.FeedbackReducer.feedback);
-    // console.log(feedbacks);
-
     const feedbacksRender = () => {
         return feedbacks.map((feedback, index) => {
             return <div className="col-lg-6" key={index}>
@@ -27,7 +25,6 @@ export default function Feedbacks() {
             </div>
         })
     }
-
     return (
         <div className="feedback">
             <div className="container">

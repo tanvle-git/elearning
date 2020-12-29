@@ -1,18 +1,21 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import './CourseList.scss'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import SubInfo from '../../components/SubInfo/SubInfo';
 import { setListSetting, resetListSetting, selectPage } from '../../redux/actions/UserSettingActions';
 import List from '../../components/List/List';
 import Modal from 'react-bootstrap/Modal';
 import ModalComponent from '../../components/ModalComponent/ModalComponent';
 import { setModal } from '../../redux/actions/UserSettingActions';
-import { deleteCourseAction, selectCourseEditAction } from '../../redux/actions/CoursesManageActions'
+import { deleteCourseAction, selectCourseEditAction, getCourseListAction } from '../../redux/actions/CoursesManageActions'
 
 
 export default function CourseList() {
-    //Filter modal in small screen
+    window.scrollTo(0, 0);
+    const dispatch = useDispatch();
+
+    const [searchInput, setSearchInput] = useState('')
+
     const [filterModal, setFilterModal] = useState(false);
     const handleFilterClose = () => setFilterModal(false);
     const handleFilterModal = () => setFilterModal(true);
@@ -20,14 +23,13 @@ export default function CourseList() {
         dispatch(setModal({ modal: 'newCourse', value: true }))
     };
     const deleteCourse = (ID) => {
-        console.log('sẽ xóa khóa học ', ID);
         dispatch(deleteCourseAction(ID))
     }
     const editCourse = (Obj) => {
         dispatch(setModal({ modal: 'editCourse', value: true }));
         dispatch(selectCourseEditAction(Obj));
-        console.log('sẽ sửa khóa học ', Obj);
     }
+    const searchKey = useSelector(state => state.CoursesReducer.searchKey)
     const userInfo = useSelector(state => state.UserReducer.userInfo)
     const courseList = useSelector(state => state.CoursesReducer.courses);
     const category = useSelector(state => state.CoursesReducer.category);
@@ -86,23 +88,46 @@ export default function CourseList() {
             </Fragment>
         })
     }
-    const dispatch = useDispatch();
 
     const handleChange = (e) => {
-        console.log(e);
-        console.log(e.target.name, e.target.value);
         dispatch(setListSetting(e.target.name.replace('Modal', ''), e.target.value));
         dispatch(selectPage(0));
     }
 
     useEffect(() => () => {
         dispatch(resetListSetting());
-    }, [])
+        dispatch(getCourseListAction(''));
+    }, [dispatch])
+    const handleChangeInput = (e) =>{
+        setSearchInput(e.target.value)
+    }
+    const search = (e) => {
+        e.preventDefault();
+        dispatch(getCourseListAction(searchInput));
+    }
+    const clearSearch = (e) => {
+        e.preventDefault();
+        dispatch(getCourseListAction(''));
+    }
+    const searchButtonRender = () => {
+        if (searchKey !== '') {
+            return <button className="icon" onClick={clearSearch}>
+                <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 172 172"><g fill="none" fillRule="nonzero" stroke="none" strokeWidth={1} strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit={10} strokeDashoffset={0} fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: 'normal' }}><path d="M0,172v-172h172v172z" fill="none" /><g fill="#645a53"><path d="M86,17.2c-37.9948,0 -68.8,30.8052 -68.8,68.8c0,37.9948 30.8052,68.8 68.8,68.8c37.9948,0 68.8,-30.8052 68.8,-68.8c0,-37.9948 -30.8052,-68.8 -68.8,-68.8zM94.10693,86c0,0 17.99693,17.99693 18.87987,18.87987c2.24173,2.24173 2.24173,5.87093 0,8.10693c-2.24173,2.24173 -5.87093,2.24173 -8.10693,0c-0.88293,-0.8772 -18.87987,-18.87987 -18.87987,-18.87987c0,0 -17.99693,17.99693 -18.87987,18.87987c-2.24173,2.24173 -5.87093,2.24173 -8.10693,0c-2.24173,-2.24173 -2.24173,-5.87093 0,-8.10693c0.8772,-0.88293 18.87987,-18.87987 18.87987,-18.87987c0,0 -17.99693,-17.99693 -18.87987,-18.87987c-2.24173,-2.24173 -2.24173,-5.87093 0,-8.10693c2.24173,-2.24173 5.87093,-2.24173 8.10693,0c0.88293,0.8772 18.87987,18.87987 18.87987,18.87987c0,0 17.99693,-17.99693 18.87987,-18.87987c2.24173,-2.24173 5.87093,-2.24173 8.10693,0c2.24173,2.24173 2.24173,5.87093 0,8.10693c-0.8772,0.88293 -18.87987,18.87987 -18.87987,18.87987z" /></g></g></svg>
+            </button>
 
+        }
+        return <button className="icon" onClick={search} >
+            <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 172 172"><g fill="none" fillRule="nonzero" stroke="none" strokeWidth={1} strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit={10} strokeDashoffset={0} fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: 'normal' }}><path d="M0,172v-172h172v172z" fill="none" /><g fill="#645a53"><path d="M74.53333,17.2c-31.59642,0 -57.33333,25.73692 -57.33333,57.33333c0,31.59642 25.73692,57.33333 57.33333,57.33333c13.73998,0 26.35834,-4.87915 36.24766,-12.97839l34.23203,34.23203c1.43802,1.49778 3.5734,2.10113 5.5826,1.57735c2.0092,-0.52378 3.57826,-2.09284 4.10204,-4.10204c0.52378,-2.0092 -0.07957,-4.14458 -1.57735,-5.5826l-34.23203,-34.23203c8.09924,-9.88932 12.97839,-22.50768 12.97839,-36.24766c0,-31.59642 -25.73692,-57.33333 -57.33333,-57.33333zM74.53333,28.66667c25.39937,0 45.86667,20.4673 45.86667,45.86667c0,25.39937 -20.46729,45.86667 -45.86667,45.86667c-25.39937,0 -45.86667,-20.46729 -45.86667,-45.86667c0,-25.39937 20.4673,-45.86667 45.86667,-45.86667z" /></g></g></svg>
+        </button>
+    }
 
     const filterRender = (modal) => {
         return <Fragment>
-            <input type="text" placeholder="Tìm kiếm khóa học" style={{ width: '100%', border: 'none', borderBottom: '.5px solid #504343', height: 35, marginBottom: 30 }} />
+            <form className="searchForm">
+                <input type="text" placeholder="Tìm kiếm" defaultValue={searchKey} onChange={handleChangeInput}/>
+                {searchButtonRender()}
+            </form>
+            <br/>
             <h2 className="smallTitle">Danh mục</h2>
             <input type="radio" id={"all" + modal} name={"category" + modal} defaultValue="all" defaultChecked={listSetting_category === 'all'} />
             <label htmlFor={"all" + modal} >Tất cả</label><br />
@@ -117,7 +142,7 @@ export default function CourseList() {
             <input type="radio" id={"newest" + modal} name={"sort" + modal} defaultValue="newest" defaultChecked={listSetting_sort === 'newest'} />
             <label htmlFor={"newest" + modal}>Mới nhất</label><br /><br />
             <h2 className="smallTitle">Kết quả mỗi trang</h2>
-            <input type="radio" id={"5" + modal} name={"itemperpage" + modal} defaultValue="5" defaultChecked defaultChecked={listSetting_itemperpage === '5'} />
+            <input type="radio" id={"5" + modal} name={"itemperpage" + modal} defaultValue="5" defaultChecked={listSetting_itemperpage === '5'} />
             <label htmlFor={"5" + modal} >5</label><br />
             <input type="radio" id={"10" + modal} name={"itemperpage" + modal} defaultValue="10" defaultChecked={listSetting_itemperpage === '10'} />
             <label htmlFor={"10" + modal}>10</label><br />
@@ -157,7 +182,7 @@ export default function CourseList() {
                 </div>
                 <button className="smallBtn brownOutlineBtn" onClick={() => handleFilterClose()}>Đóng</button>
             </Modal>
-            
+
             <ModalComponent type='newCourse' />
             <ModalComponent type='editCourse' />
         </div>

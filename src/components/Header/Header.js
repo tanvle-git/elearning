@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.scss'
 import logo from './elearning.svg'
 import { NavLink } from 'react-router-dom';
 import '../Buttons/Button.scss'
 import HeaderGuest from './HeaderGuest'
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, } from 'react-redux';
 import HeaderNormalUser from './HeaderNormalUser';
 import HeaderAdminUser from './HeaderAdminUser';
 
 export default function Header() {
     let userInfo = useSelector(state => state.UserReducer.userInfo);
-    console.log(userInfo);
     const headerRender = () => {
         switch (userInfo.maLoaiNguoiDung) {
             case 'HV':
@@ -21,10 +20,7 @@ export default function Header() {
             default:
                 return <HeaderGuest />
         }
-        
     }
-
-
     return (
         <header expand="lg">
             <div className="container">
@@ -36,10 +32,7 @@ export default function Header() {
                     {headerRender()}
                 </div>
             </div>
-
-
         </header>
-
     )
 }
 

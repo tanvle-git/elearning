@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import SlickSliders from '../SlickSilder/SlickSlider';
 import './TopCourses.scss'
-import { connect, useSelector, useDispatch } from 'react-redux';
-import { getCourseListAction} from '../../redux/actions/CoursesManageActions';
+import { useSelector } from 'react-redux';
 
 export default function TopCourses() {
 
-    const dispatch = useDispatch();
-    useEffect(() => { dispatch(getCourseListAction()) }, [])
     const courseList = useSelector(state => state.CoursesReducer.courses);
-    // courseList.length=10;
 
     return (
         <div className="TopCourses">

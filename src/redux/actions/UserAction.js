@@ -1,13 +1,14 @@
 import axios from 'axios';
-import { DOMAIN, TOKEN, USER_LOGIN } from '../../ultity/WebConfig';
-import { SIGN_IN, SIGN_UP, GET_USER_INFO, SIGN_OUT, CHANGE_USER_INFO, CHANGE_PASSWORD, JOIN_COURSE, CANCEL_COURSE, GET_USER_LIST, GET_USER_TYPE,SELECT_USER_EDIT } from '../constants/UserConstants';
+import { DOMAIN, USER_LOGIN } from '../../ultity/WebConfig';
+import { SIGN_IN, SIGN_UP, GET_USER_INFO, SIGN_OUT, CHANGE_USER_INFO, CHANGE_PASSWORD, GET_USER_LIST, GET_USER_TYPE, SELECT_USER_EDIT, GET_COURSE_USERS_DETAIL } from '../constants/UserConstants';
 import swal from 'sweetalert';
 import { setModal } from '../../redux/actions/UserSettingActions';
+import { getUserCoursesDetailAction } from '../../redux/actions/CoursesManageActions'
 
 export const signUpAction = (userSignUp) => {
     return async dispatch => {
         try {
-            let { data, status } = await axios({
+            let { status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/DangKy',
                 method: 'post',
                 data: {
@@ -42,9 +43,7 @@ export const signInAction = (userLogin) => {
                     matKhau: userLogin.password
                 }
             });
-            console.log('data', data)
             if (status === 200) {
-                //Sau khi gọi api => dispatch lên redux 
                 dispatch({
                     type: SIGN_IN,
                     userLogin: data,
@@ -59,9 +58,7 @@ export const signInAction = (userLogin) => {
 
 export const getUserInfoAction = () => {
     let bearer = 'Bearer ' + localStorage.getItem('accessToken');
-    // console.log(bearer);
     let username = JSON.parse(localStorage.getItem('userLogin'));
-    // console.log(username);
     return dispatch => axios({
         url: DOMAIN + '/api/QuanLyNguoiDung/ThongTinTaiKhoan',
         method: 'post',
@@ -73,16 +70,15 @@ export const getUserInfoAction = () => {
         }
     }).then(res => {
         if (res.status === 200) {
-            console.log(res.data.chiTietKhoaHocGhiDanh);
             dispatch({
                 type: GET_USER_INFO,
                 userInfo: res.data
             });
         } else {
-            console.log(res.status, ' ', res.statusText);
+            swal({ text: 'Lỗi rồi', icon: "warning", button: false });
         }
     }).catch(err => {
-        console.log(err);
+        swal({ text: 'Lỗi rồi', icon: "warning", button: false });
     })
         ;
 }
@@ -126,12 +122,10 @@ export const changeUserInfo = (userInfo) => {
                 //Lưu vào localstorage
                 let currentLocalUserLogin = JSON.parse(localStorage.getItem(USER_LOGIN));
                 currentLocalUserLogin = { ...currentLocalUserLogin, taiKhoan, hoTen, email, soDT }
-                console.log('current', currentLocalUserLogin);
                 localStorage.setItem(USER_LOGIN, JSON.stringify(currentLocalUserLogin));
                 swal({ text: "Cập nhật thành công", icon: "success", button: false });
             }
         } catch (err) {
-            console.log(err.response);
             swal({ text: err.response.data, icon: "warning", button: false });
         }
     }
@@ -141,7 +135,7 @@ export const changePasswordAction = (userInfo) => {
     let bearer = 'Bearer ' + localStorage.getItem('accessToken');
     return async dispatch => {
         try {
-            let { data, status } = await axios({
+            let { status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung',
                 method: 'PUT',
                 headers: {
@@ -158,7 +152,6 @@ export const changePasswordAction = (userInfo) => {
                 }
             });
             if (status === 200) {
-                console.log(userInfo);
                 swal({ text: "Cập nhật thành công", icon: "success", button: false });
                 dispatch({
                     type: CHANGE_PASSWORD,
@@ -166,7 +159,6 @@ export const changePasswordAction = (userInfo) => {
                 });
             }
         } catch (err) {
-            console.log(err.response);
             swal({ text: err.response.data, icon: "warning", button: false });
         }
     }
@@ -187,13 +179,34 @@ export const joinCourseAction = (courseID, username) => {
                     maKhoaHoc: courseID
                 }
             });
-            console.log('data', data)
             if (status === 200) {
                 swal({ text: data, icon: "success", button: false });
-                dispatch({
-                    type: JOIN_COURSE,
-                    course: courseID
-                })
+                dispatch(getUserInfoAction());
+            }
+        } catch (err) {
+            swal({ text: err.response?.data, icon: "warning", button: false });
+        }
+    }
+}
+export const joinCourseAction_forAdmin = (courseID, username) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return async dispatch => {
+        try {
+            let { data, status } = await axios({
+                url: DOMAIN + '/api/QuanLyKhoaHoc/GhiDanhKhoaHoc',
+                method: 'post',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    taiKhoan: username,
+                    maKhoaHoc: courseID
+                }
+            });
+            if (status === 200) {
+                swal({ text: data, icon: "success", button: false });
+                dispatch(getUserCoursesDetailAction(username));
+                dispatch(getCourseUsersDetailAction(courseID));
             }
         } catch (err) {
             swal({ text: err.response?.data, icon: "warning", button: false });
@@ -216,13 +229,14 @@ export const cancelCourseAction = (courseID, username) => {
                     maKhoaHoc: courseID
                 }
             });
-            console.log('data', data)
             if (status === 200) {
                 swal({ text: data, icon: "success", button: false });
-                dispatch({
-                    type: CANCEL_COURSE,
-                    course: courseID
-                })
+                if (JSON.parse(localStorage.getItem(USER_LOGIN)).maLoaiNguoiDung === "GV") {
+                    dispatch(getUserCoursesDetailAction(username));
+                    dispatch(getCourseUsersDetailAction(courseID));
+                } else {
+                    dispatch(getUserInfoAction());
+                }
             }
         } catch (err) {
             swal({ text: err.response?.data, icon: "warning", button: false });
@@ -230,18 +244,18 @@ export const cancelCourseAction = (courseID, username) => {
     }
 }
 
-export const getUserList = () => {
+export const getUserList = (key) => {
     return async dispatch => {
         try {
             let { data, status } = await axios({
-                url: DOMAIN + '/api/QuanLyNguoiDung/TimKiemNguoiDung?MaNhom=GP12',
+                url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachNguoiDung?MaNhom=GP12'+ (key===undefined?'':`&tuKhoa=${key}`),
                 method: 'GET',
             });
-            console.log(data);
             if (status === 200) {
                 dispatch({
                     type: GET_USER_LIST,
-                    userList: data
+                    userList: data,
+                    key: key===undefined?'':key
                 })
             }
         } catch (err) {
@@ -257,7 +271,6 @@ export const getUserType = () => {
                 url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachLoaiNguoiDung',
                 method: 'GET',
             });
-            console.log(data);
             if (status === 200) {
                 dispatch({
                     type: GET_USER_TYPE,
@@ -275,7 +288,7 @@ export const createUserAction = (newUserInfo) => {
     let { taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email } = newUserInfo
     return async dispatch => {
         try {
-            let { data, status } = await axios({
+            let { status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/ThemNguoiDung',
                 method: 'POST',
                 headers: {
@@ -296,7 +309,6 @@ export const createUserAction = (newUserInfo) => {
             swal({ text: err.response?.data, icon: "warning", button: false });
         }
     }
-
 }
 
 export const deleteUserAction = (taiKhoan) => {
@@ -317,22 +329,19 @@ export const deleteUserAction = (taiKhoan) => {
                         Authorization: bearer
                     }
                 }).then(res => {
-                    console.log(res);
                     swal(res.data, {
-                        icon: "success", button: false 
+                        icon: "success", button: false
                     });
                     dispatch(getUserList());
                 })
-                .catch(err => {
-                    console.log(err);
-                    swal({ text: err.response?.data, icon: "error", button: false });
-                })
+                    .catch(err => {
+                        swal({ text: err.response?.data, icon: "error", button: false });
+                    })
             }
         });
 }
 
 export const selectUserEditAction = (user) => {
-    console.log('action',user);
     return {
         type: SELECT_USER_EDIT,
         user,
@@ -344,7 +353,7 @@ export const editUserAction = (newUserInfo) => {
     let { taiKhoan, matKhau, hoTen, soDT, maLoaiNguoiDung, email } = newUserInfo
     return async dispatch => {
         try {
-            let { data, status } = await axios({
+            let { status } = await axios({
                 url: DOMAIN + '/api/QuanLyNguoiDung/CapNhatThongTinNguoiDung',
                 method: 'PUT',
                 headers: {
@@ -366,4 +375,53 @@ export const editUserAction = (newUserInfo) => {
         }
     }
 
+}
+export const getCourseUsersDetailAction = (maKhoaHoc) => {
+    let bearer = 'Bearer ' + localStorage.getItem('accessToken');
+    return dispatch => axios({
+        url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachNguoiDungChuaGhiDanh',
+        method: 'POST',
+        headers: {
+            Authorization: bearer
+        },
+        data: {
+            maKhoaHoc,
+        }
+    }).then(res => {
+        const haveNotJoined = res.data;
+        axios({
+            url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachHocVienChoXetDuyet',
+            method: 'POST',
+            headers: {
+                Authorization: bearer
+            },
+            data: {
+                maKhoaHoc,
+            }
+        }).then(res1 => {
+            const pendingCourses = res1.data;
+            axios({
+                url: DOMAIN + '/api/QuanLyNguoiDung/LayDanhSachHocVienKhoaHoc',
+                method: 'POST',
+                headers: {
+                    Authorization: bearer
+                },
+                data: {
+                    maKhoaHoc,
+                }
+            }).then(res2 => {
+                const haveJoined = res2.data;
+                dispatch({
+                    type: GET_COURSE_USERS_DETAIL,
+                    haveNotJoined, pendingCourses, haveJoined
+                })
+            }).catch(err => {
+                swal({ text: err.response?.data, icon: "error", button: false });
+            });
+        }).catch(err => {
+            swal({ text: err.response?.data, icon: "error", button: false });
+        });
+    }).catch(err => {
+        swal({ text: err.response?.data, icon: "error", button: false });
+    });
 }
