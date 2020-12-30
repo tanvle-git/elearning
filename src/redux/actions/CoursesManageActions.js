@@ -4,20 +4,6 @@ import { LOAD_COURSE_CATEGORY, GET_COURSE_DETAIL, DELETE_COURSE, SELECT_COURSE_E
 import swal from 'sweetalert';
 import { setModal } from '../../redux/actions/UserSettingActions';
 
-// export const getCourseListAction = () => {
-//     return async dispatch => {
-//         const { data } = await axios({
-//             url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12',
-//             method: 'GET'
-//         });
-//         const action = {
-//             type: LOAD_COURSE_LIST,
-//             courseList: data,
-//         };
-//         dispatch(action);
-//     }
-// }
-
 export const getCourseListAction = (key) => {
     return async dispatch => axios({
         url: DOMAIN + '/api/QuanLyKhoaHoc/LayDanhSachKhoaHoc?MaNhom=GP12&tenKhoaHoc=' + key,

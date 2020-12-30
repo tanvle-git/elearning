@@ -54,3 +54,10 @@
 .modal-backdrop.show {
     opacity: 1;
 }
+
+.hover{
+    cursor: pointer;
+    &:hover{
+    color: black;
+    }
+}

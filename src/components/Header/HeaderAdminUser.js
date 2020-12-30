@@ -36,11 +36,11 @@ export default function HeaderAdminUser() {
     }
     return (
         <Fragment>
-            <span className="simpleBtn d-none d-md-block"><NavLink to='/all-course'>Quản lý khóa học</NavLink></span>
+            <span  className="simpleBtn hover d-none d-md-block"><NavLink to='/all-course'>Quản lý khóa học</NavLink></span>
             <div className="verLine d-none d-md-block"></div>
-            <span className="simpleBtn d-none d-md-block"><NavLink to='/user-list'>Quản lý người dùng</NavLink></span>
+            <span className="simpleBtn hover d-none d-md-block"><NavLink to='/user-list'>Quản lý người dùng</NavLink></span>
             <div className="verLine d-none d-md-block"></div>
-            <span className="simpleBtn d-none d-md-block"><NavLink to='/profile'>{fullName}</NavLink></span>
+            <span className="simpleBtn hover d-none d-md-block"><NavLink to='/profile'>{fullName}</NavLink></span>
             <span className="userPicture d-none d-md-block">{nameFilter}</span>
             <Dropdown>
                 <Dropdown.Toggle className="d-block d-md-none" variant="outline-secondary" id="dropdown-basic">

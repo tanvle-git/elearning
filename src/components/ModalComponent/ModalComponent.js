@@ -193,7 +193,7 @@ export default function ModalComponent(props) {
             return (<Modal show={editCourseModal} onHide={() => handleModalClose('editCourse')} centered size="sm">
                 <div className="modalTitleBox">
                     <h1 className="modal-title">Chỉnh sửa khóa học</h1>
-                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('editCourse')} />
+                    <img className="hover" src={closeSvg} alt="close button" onClick={() => handleModalClose('editCourse')} />
                 </div>
                 <Formik
                     initialValues={{
@@ -315,7 +315,7 @@ export default function ModalComponent(props) {
             return (<Modal show={newUserModal} onHide={() => handleModalClose('newUser')} centered size="sm">
                 <div className="modalTitleBox">
                     <h1 className="modal-title">Thêm người dùng mới</h1>
-                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('newUser')} />
+                    <img className="hover" src={closeSvg} alt="close button" onClick={() => handleModalClose('newUser')} />
                 </div>
                 <Formik
                     initialValues={{
@@ -405,7 +405,7 @@ export default function ModalComponent(props) {
             return (<Modal show={editUserModal} onHide={() => handleModalClose('editUser')} centered size="sm">
                 <div className="modalTitleBox">
                     <h1 className="modal-title">Chỉnh sửa người dùng</h1>
-                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('editUser')} />
+                    <img className="hover" src={closeSvg} alt="close button" onClick={() => handleModalClose('editUser')} />
                 </div>
                 <Formik
                     initialValues={{
@@ -495,7 +495,7 @@ export default function ModalComponent(props) {
             return (<Modal show={signInModal} onHide={() => handleModalClose('signIn')} centered size="sm">
                 <div className="modalTitleBox">
                     <h1 className="modal-title">Đăng nhập</h1>
-                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('signIn')} />
+                    <img className="hover" src={closeSvg} alt="close button" onClick={() => handleModalClose('signIn')} />
                 </div>
 
                 <Formik
@@ -529,7 +529,7 @@ export default function ModalComponent(props) {
                                     </OverlayTrigger>}
                             </div>
                             <button className="brownSolidBtn" type="submit" style={{ width: '100%', margin: 0 }}>Đăng nhập</button>
-                            <p>Chưa có tài khoản? <b onClick={switchModal}>Đăng ký</b></p>
+                            <p className="hover">Chưa có tài khoản? <b onClick={switchModal}>Đăng ký</b></p>
                         </Form>)}
                 </Formik>
             </Modal>
@@ -538,7 +538,7 @@ export default function ModalComponent(props) {
             return (<Modal show={signUpModal} onHide={() => handleModalClose('signUp')} centered size="sm">
                 <div className="modalTitleBox">
                     <h1 className="modal-title">Đăng ký</h1>
-                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('signUp')} />
+                    <img className="hover" src={closeSvg} alt="close button" onClick={() => handleModalClose('signUp')} />
                 </div>
                 <Formik
                     initialValues={{
@@ -614,7 +614,7 @@ export default function ModalComponent(props) {
                             </div>
                             <div>
                                 <button className="brownSolidBtn" style={{ width: '100%', margin: 0 }}>Đăng ký</button>
-                                <p>Đã có tài khoản? <b onClick={switchModal}>Đăng nhập</b></p>
+                                <p className="hover">Đã có tài khoản? <b onClick={switchModal}>Đăng nhập</b></p>
                             </div>
                         </Form>)}
                 </Formik>

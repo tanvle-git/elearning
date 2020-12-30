@@ -115,7 +115,7 @@ export default function UserProfile() {
                 </div>
                 <div className="row">
                     <div className="col-5">Mật khẩu:</div>
-                    <div className="col-7" style={{ fontWeight: 700, color: 'black' }} onClick={handlePasswordModal}>Đổi mật khẩu?</div>
+                    <div className="col-7 hover" style={{ fontWeight: 700, color: 'black' }} onClick={handlePasswordModal}>Đổi mật khẩu?</div>
                 </div>
                 <div className="row d-sm-flex d-md-none">
                     <div className="col-5">Loại tài khoản:</div>
@@ -203,7 +203,7 @@ export default function UserProfile() {
 
                         <div className="row">
                             <div className="col-5">Mật khẩu:</div>
-                            <div className="col-7" style={{ fontWeight: 700, color: 'black' }} onClick={handlePasswordModal}>Đổi mật khẩu?</div>
+                            <div className="col-7 hover" style={{ fontWeight: 700, color: 'black' }} onClick={handlePasswordModal}>Đổi mật khẩu?</div>
                         </div>
                         <div className="row d-sm-flex d-md-none">
                             <div className="col-5">Loại tài khoản:</div>
@@ -224,7 +224,7 @@ export default function UserProfile() {
     return (
         <div className="container userCardProfileParent" style={{ marginTop: '80px' }}>
             <div className="userCardProfile">
-                <div className="signOutButton d-none d-md-block" onClick={() => signOut()}>
+                <div className="hover signOutButton d-none d-md-block" onClick={() => signOut()}>
                     <img src={signOutSvg} alt="sign out button" />
                 </div>
                 <div className="row">
@@ -252,7 +252,7 @@ export default function UserProfile() {
             </div>
 
             <Modal show={passwordModal} onHide={handlePasswordClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đổi mật khẩu</h1><img src={closeSvg} alt="close button" onClick={handlePasswordClose} /></div>
+                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Đổi mật khẩu</h1><img className="hover" src={closeSvg} alt="close button" onClick={handlePasswordClose} /></div>
 
                 <Formik
                     initialValues={{
