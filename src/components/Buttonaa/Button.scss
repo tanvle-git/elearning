@@ -1,4 +1,4 @@
-button{
+button {
     font-weight: 500;
     border-radius: 40px;
     color: white;
@@ -8,54 +8,53 @@ button{
     height: 35px;
     min-width: 120px;
     display: block;
-    opacity: .9;
-    &:focus{
+    opacity: 0.9;
+    &:focus {
         box-shadow: 0 0 0pt 1pt #645a53;
         outline: none;
     }
-    &:hover{
+    &:hover {
         opacity: 1;
     }
 }
-
-
-.brownOutlineBtn{
+.brownOutlineBtn {
     border: 1px solid #645a53;
     color: #645a53;
 }
 
-.brownSolidBtn{
+.brownSolidBtn {
     border: 1px solid #645a53;
     background-color: #645a53;
 }
-.redOutlineBtn{
+.redOutlineBtn {
     border: 1px solid #fd4646;
     color: #fd4646;
 }
 
-.redSolidBtn{
+.redSolidBtn {
     border: 1px solid #fd4646;
     background-color: #fd4646;
 }
 
-.bigBtn{
+.bigBtn {
     font-size: 1.25rem;
     height: 70px;
     padding: 15px;
 }
 
-.smallBtn{
+.smallBtn {
     font-size: 1rem;
     height: 35px;
 }
 
-.mediumBtn{
+.mediumBtn {
     font-size: 1rem;
     height: 50px;
 }
 
-.simpleBtn{
+.simpleBtn {
     color: #645a53;
-    a{
-    color: #645a53;}
+    a {
+        color: #645a53;
+    }
 }

@@ -1,9 +1,9 @@
 import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Header.scss'
-import logo from './elearning.svg'
+import logo from '../../assets/elearning.svg'
 import { NavLink } from 'react-router-dom';
-import '../Buttons/Button.scss'
+// import '../Button/Button.scss'
 import HeaderGuest from './HeaderGuest'
 import { useSelector, } from 'react-redux';
 import HeaderNormalUser from './HeaderNormalUser';

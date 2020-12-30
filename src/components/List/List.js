@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import './List.scss'
 import { useSelector, useDispatch } from 'react-redux';
 import Pagination from 'react-bootstrap/Pagination';
 import SubInfo from '../SubInfo/SubInfo';
@@ -20,15 +21,19 @@ export default function List(props) {
         }
         return pages;
     }
+
     useEffect(() => {
         return () => {
             dispatch(selectPage(0));
         }
     }, [dispatch])
+
     const changePage = (number) => {
         dispatch(selectPage(number));
     }
+
     let pages = splitPages();
+
     for (let number = 1; number <= numberOfPages; number++) {
         items.push(
             <Pagination.Item key={number} active={number === active + 1} onClick={() => changePage(number - 1)}>
@@ -49,6 +54,7 @@ export default function List(props) {
             </Fragment>
         }
     }
+
     if (props.list.length > 0) {
         switch (props.type) {
             case "CourseList":
@@ -56,21 +62,17 @@ export default function List(props) {
                     <div>
                         {pages[active]?.map((course, index) => {
                             return <div className="courseItem" key={index}>
-
-                                <div className="d-flex  align-items-center">
-                                    <img className="courseImg" src={course.hinhAnh} alt={course.tenKhoaHoc} onError={addDefaultSrc} />
-                                    <div className="d-flex flex-column" style={{ width: '100%', marginLeft: 30 }}>
-                                        <NavLink to={`/detail/${course.maKhoaHoc}`}>
-                                            <h2 className="smallTitle courseName">{course.tenKhoaHoc}</h2>
-                                        </NavLink>
-                                        <p className="courseDescription">{course.moTa}</p>
-                                        <div className='align-self-end d-flex justify-content-end' style={{ width: '100%' }}>
-                                            <div className="d-none d-sm-flex" style={{ maxWidth: '325px', flexGrow: 1 }}>
-                                                <SubInfo luotXem={course.luotXem} soLuongHocVien={course.soLuongHocVien} />
-                                            </div>
-                                            {adminButton(course)}
-
+                                <img className="courseImg" src={course.hinhAnh} alt={course.tenKhoaHoc} onError={addDefaultSrc} />
+                                <div className="courseText">
+                                    <NavLink to={`/detail/${course.maKhoaHoc}`}>
+                                        <h2 className="courseName">{course.tenKhoaHoc}</h2>
+                                    </NavLink>
+                                    <p className="courseDescription">{course.moTa}</p>
+                                    <div className='courseMoreInfo'>
+                                        <div className="d-none d-sm-flex subInfoContainer">
+                                            <SubInfo luotXem={course.luotXem} soLuongHocVien={course.soLuongHocVien} />
                                         </div>
+                                        {adminButton(course)}
                                     </div>
                                 </div>
                             </div>
@@ -84,9 +86,8 @@ export default function List(props) {
                 )
             case "UserList":
                 return (
-                    <div style={{ margin: '0 30px' }}>
-                        <table className="table text-center" style={{ tableLayout: 'fixed' }}>
-
+                    <div className="tableContainer">
+                        <table className="table table-hover">
                             <thead>
                                 <tr>
                                     <th scope="col" >Tài khoản</th>
@@ -98,12 +99,11 @@ export default function List(props) {
                             <tbody>
                                 {pages[active]?.map((user, index) => {
                                     return <tr key={index} style={{ color: user.maLoaiNguoiDung === "GV" ? '#fd4646' : '#645a53' }}>
-                                        <th scope="row" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.taiKhoan}</th>
-                                        <td className="d-none d-sm-table-cell" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.hoTen}</td>
-                                        <td className="d-none d-md-table-cell" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email}<br />{user.soDt}</td>
-                                        <td className="" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-
-                                            <div className="d-flex justify-content-center">
+                                        <th className="tdOverflow" scope="row">{user.taiKhoan}</th>
+                                        <td className="d-none d-sm-table-cell tdOverflow">{user.hoTen}</td>
+                                        <td className="d-none d-md-table-cell tdOverflow">{user.email}<br />{user.soDt}</td>
+                                        <td className="tdOverflow">
+                                            <div className="adminActionButton">
                                                 {props.adminButtonRender('view', user.taiKhoan)}
                                                 {props.adminButtonRender('edit', user)}
                                                 {props.adminButtonRender('delete', user.taiKhoan)}
@@ -123,6 +123,6 @@ export default function List(props) {
                 return "Có gì đó sai sai!"
         }
     } else {
-        return <div style={{padding:'15px', textAlign:'center'}}>Trống</div>
+        return <div className="noDataList">Trống</div>
     }
 }

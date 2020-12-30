@@ -1,18 +1,12 @@
 import React from 'react'
 import Slider from "react-slick";
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import './SlickSlider.scss'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { getCourseDetail } from '../../redux/actions/CoursesManageActions';
+import starSvg from '../../assets/star.svg'
 
 export default function SlickSliders(props) {
-    const dispatch = useDispatch();
-    const scrollToTop=(id)=>{
-        window.scrollTo(0, 0);
-        dispatch(getCourseDetail(id));
-    }
     const settings={
         className: "slider variable-width",
         dots: false,
@@ -30,9 +24,10 @@ export default function SlickSliders(props) {
         draggable: false,
         swipeToSlide:true,
     }
+
     const coursesRender = () => {
         return props.courseList.filter(course => course.danhMucKhoaHoc.maDanhMucKhoahoc === (props.type === 'ALL'? course.danhMucKhoaHoc.maDanhMucKhoahoc : props.type)).map((course,index) => {
-            return <NavLink className="item" key={index} to={`/detail/${course.maKhoaHoc}`} onClick={()=>{scrollToTop(course.maKhoaHoc)}}>
+            return <NavLink className="item" key={index} to={`/detail/${course.maKhoaHoc}`} >
             <img src={course.hinhAnh} alt={course.biDanh} />
             <span className="badge">Nổi bật</span>
             <div className="itemContent">
@@ -43,16 +38,17 @@ export default function SlickSliders(props) {
                 {course.moTa}
                 </p>
                 <div className="rate">
-                    <img className="star" src="./img/star.svg" alt="" />
-                    <img className="star" src="./img/star.svg" alt="" />
-                    <img className="star" src="./img/star.svg" alt="" />
-                    <img className="star" src="./img/star.svg" alt="" />
-                    <img className="star" src="./img/star.svg" alt="" />
+                    <img className="star" src={starSvg} alt="star icon" />
+                    <img className="star" src={starSvg} alt="star icon" />
+                    <img className="star" src={starSvg} alt="star icon" />
+                    <img className="star" src={starSvg} alt="star icon" />
+                    <img className="star" src={starSvg} alt="star icon" />
                 </div>
             </div>
         </NavLink>
         })
     }
+
     return (
         <Slider {...settings}>
             {coursesRender()}

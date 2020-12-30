@@ -4,9 +4,9 @@ import './WhyUs.scss'
 
 export default function WhyUs() {
     return (
-        <div className="WhyUs">
+        <div className="whyUs">
             <div className="container">
-                <div className="row align-items-center">
+                <div className="row">
                     <div className="d-none d-lg-block col-lg-5">
                         <img src="./img/iphoneMockup.png" alt="E-learning every where" width="100%" />
                     </div>

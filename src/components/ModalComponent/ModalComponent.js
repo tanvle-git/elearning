@@ -1,48 +1,47 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
+import './ModalComponent.scss'
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import Tooltip from 'react-bootstrap/Tooltip';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { setModal } from '../../redux/actions/UserSettingActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { createCourseAction, editCourseAction } from '../../redux/actions/CoursesManageActions'
-import { createUserAction, editUserAction } from '../../redux/actions/UserAction'
+import { createUserAction, editUserAction, signInAction, signUpAction } from '../../redux/actions/UserAction'
+import { newCourseSchema, userSchema, signInSchema, signUpSchema } from '../../ultity/Schema'
+import closeSvg from '../../assets/close.svg'
+import errorSvg from '../../assets/error.svg'
+import viewSvg from '../../assets/view.svg'
+import peopleCheckSvg from '../../assets/peopleCheck.svg'
 
 export default function ModalComponent(props) {
 
     const newCourseModal = useSelector(state => state.UserSettingReducer.modal.newCourse);
     const editCourseModal = useSelector(state => state.UserSettingReducer.modal.editCourse);
-
     const newUserModal = useSelector(state => state.UserSettingReducer.modal.newUser);
     const editUserModal = useSelector(state => state.UserSettingReducer.modal.editUser);
+    const signInModal = useSelector(state => state.UserSettingReducer.modal.signIn);
+    const signUpModal = useSelector(state => state.UserSettingReducer.modal.signUp);
 
-    const category = useSelector(state => state.CoursesReducer.category);
-    const userType = useSelector(state => state.UserReducer.userType);
-    const userInfo = useSelector(state => state.UserReducer.userInfo);
-    const courseEditing = useSelector(state => state.CoursesReducer.courseEditing);
-    const userEditing = useSelector(state => state.UserReducer.userEditing);
+    const { userType, userInfo, userEditing } = useSelector(state => state.UserReducer);
+    const { category, courseEditing } = useSelector(state => state.CoursesReducer);
     const dispatch = useDispatch();
-
-    const handleNewCourseClose = () => {
-        dispatch(setModal({ modal: 'newCourse', value: false }));
-    };
-    const handleEditCourseClose = () => {
-        dispatch(setModal({ modal: 'editCourse', value: false }));
-    };
-    const handleNewUserClose = () => {
-        dispatch(setModal({ modal: 'newUser', value: false }));
-    };
-    const handleEditUserClose = () => {
-        dispatch(setModal({ modal: 'editUser', value: false }));
-    };
-
-
     const renderTooltip = (props) => {
         return <Tooltip >
             {props}
         </Tooltip>
     };
+
+    const handleModalClose = (modalName) => {
+        dispatch(setModal({ modal: modalName, value: false }));
+
+    }
+
+    const switchModal = () => {
+        dispatch(setModal({ modal: 'signIn', value: !signInModal }));
+        dispatch(setModal({ modal: 'signUp', value: !signUpModal }));
+    }
+
     const createCourse = (values) => {
         dispatch(createCourseAction({ ...values, maNhom: "GP12", taiKhoanNguoiTao: userInfo.taiKhoan }));
     }
@@ -58,62 +57,22 @@ export default function ModalComponent(props) {
         dispatch(editUserAction(values))
     }
 
-    const newCourseSchema = Yup.object().shape({
-        maKhoaHoc: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .max(20, 'Tối đa 20 ký tự!')
-            .required('Bắt buộc!'),
-        biDanh: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .max(100, 'Tối đa 100 ký tự!')
-            .required('Bắt buộc!'),
-        tenKhoaHoc: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .max(100, 'Tối đa 100 ký tự!')
-            .required('Bắt buộc!'),
-        moTa: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .max(1000, 'Tối đa 1000 ký tự!')
-            .required('Bắt buộc!'),
-        luotXem: Yup.number()
-            .moreThan(-1, 'Không được là số âm!')
-            .integer('Phải là số nguyên!')
-            .required('Bắt buộc!'),
-        danhGia: Yup.number()
-            .moreThan(-1, 'Không được là số âm!')
-            .integer('Phải là số nguyên!')
-            .required('Bắt buộc!'),
-        hinhAnh: Yup.mixed()
-            .required('Bắt buộc!'),
-        maDanhMucKhoaHoc: Yup.string()
-            .required('Bắt buộc!')
-    });
-    const userSchema = Yup.object().shape({
-        soDT: Yup.string()
-            .matches(/^[0-9]*$/, 'Số điện thoại không hợp lệ!')
-            .required('Bắt buộc!'),
-        email: Yup.string()
-            .email('Email không hợp lệ!')
-            .required('Bắt buộc!'),
-        taiKhoan: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .max(20, 'Tối đa 20 ký tự!')
-            .required('Bắt buộc!')
-            .matches(/^[a-zA-Z0-9_.-]*$/, 'Chỉ bao gồm chữ, số, gạch dưới "_", gạch giữa "-" và dấu chấm!'),
-        hoTen: Yup.string()
-            .required('Bắt buộc!')
-            .matches(/^[a-zA-Z]{1,}(?: [a-zA-Z]+){0,2}$/, 'Vui lòng nhập đúng họ tên của bạn (không dấu)!'),
-        matKhau: Yup.string()
-            .min(5, 'Tối thiểu 5 ký tự!')
-            .required('Bắt buộc!'),
-        maLoaiNguoiDung: Yup.string()
-            .required('Bắt buộc!'),
-    });
+    const signIn = (values) => {
+        const { username, password } = values;
+        dispatch(signInAction({ username, password }));
+    }
+    const signUp = (values) => {
+        const { phoneNumber, email, username, fullName, password } = values;
+        dispatch(signUpAction({ phoneNumber, email, username, fullName, password }));
+    }
 
     switch (props.type) {
         case 'newCourse':
-            return (<Modal show={newCourseModal} onHide={handleNewCourseClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Thêm khóa học mới</h1><img src="./img/close.svg" alt="close button" onClick={handleNewCourseClose} /></div>
+            return (<Modal show={newCourseModal} onHide={() => handleModalClose('newCourse')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Thêm khóa học mới</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('newCourse')} />
+                </div>
                 <Formik
                     initialValues={{
                         maKhoaHoc: '',
@@ -137,7 +96,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.maKhoaHoc)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -147,7 +106,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.biDanh)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -157,7 +116,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.tenKhoaHoc)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -167,32 +126,32 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.moTa)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="row" style={{ margin: 0 }}>
 
                                 <div className="inputGroup col-6" style={{ padding: 0 }}>
-                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }} ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#645A53cc" width="18px" height="18px"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M12 4C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg></div>
+                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }} ><img src={viewSvg} alt="view icon"/></div>
                                     <Field style={{ color: errors.luotXem ? '#eb5757' : 'unset', width: '100%' }} name="luotXem" type="number" placeholder="Lượt xem" min='0' />
                                     {errors.luotXem
                                         && touched.luotXem
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.luotXem)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                 </div>
 
                                 <div className="inputGroup col-6">
-                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#645A53cc" width="18px" height="18px"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M12 20l-.86-.86c-1.18-1.18-1.17-3.1.02-4.26l.84-.82c-.39-.04-.68-.06-1-.06-2.67 0-8 1.34-8 4v2h9zm-1-8c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4"></path><path d="M16.18 19.78c-.39.39-1.03.39-1.42 0l-2.07-2.09c-.38-.39-.38-1.01 0-1.39l.01-.01c.39-.39 1.02-.39 1.4 0l1.37 1.37 4.43-4.46c.39-.39 1.02-.39 1.41 0l.01.01c.38.39.38 1.01 0 1.39l-5.14 5.18z"></path></svg></div>
+                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }}><img src={peopleCheckSvg} alt="people icon"/></div>
                                     <Field style={{ color: errors.danhGia ? '#eb5757' : 'unset', width: '100%' }} name="danhGia" type="number" placeholder="Đánh giá" min='0' />
                                     {errors.danhGia
                                         && touched.danhGia
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.danhGia)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                 </div>
                             </div>
@@ -206,7 +165,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.hinhAnh)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
 
@@ -217,7 +176,7 @@ export default function ModalComponent(props) {
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.maDanhMucKhoaHoc)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                     {category.map((item, index) => {
                                         return <option value={item.maDanhMuc} key={index}>{item.maDanhMuc}</option>
@@ -231,8 +190,11 @@ export default function ModalComponent(props) {
             </Modal>
             )
         case 'editCourse':
-            return (<Modal show={editCourseModal} onHide={handleEditCourseClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Chỉnh sửa khóa học</h1><img src="./img/close.svg" alt="close button" onClick={handleEditCourseClose} /></div>
+            return (<Modal show={editCourseModal} onHide={() => handleModalClose('editCourse')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Chỉnh sửa khóa học</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('editCourse')} />
+                </div>
                 <Formik
                     initialValues={{
                         maKhoaHoc: courseEditing.maKhoaHoc,
@@ -256,7 +218,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.maKhoaHoc)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -266,7 +228,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.biDanh)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -276,7 +238,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.tenKhoaHoc)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -286,20 +248,20 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.moTa)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="row" style={{ margin: 0 }}>
 
                                 <div className="inputGroup col-6" style={{ padding: 0 }}>
-                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }} ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#645A53cc" width="18px" height="18px"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M12 4C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"></path></svg></div>
+                                    <div style={{ whiteSpace: 'nowrap', margin: 0, lineHeight: '30px', marginRight: '.5rem' }} ><img src={viewSvg} alt="view icon"/></div>
                                     <Field style={{ color: errors.luotXem ? '#eb5757' : 'unset', width: '100%' }} name="luotXem" type="number" placeholder="Lượt xem" min='0' />
                                     {errors.luotXem
                                         && touched.luotXem
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.luotXem)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                 </div>
 
@@ -311,7 +273,7 @@ export default function ModalComponent(props) {
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.danhGia)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                 </div>
                             </div>
@@ -325,7 +287,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.hinhAnh)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
 
@@ -336,7 +298,7 @@ export default function ModalComponent(props) {
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.maDanhMucKhoaHoc)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                     {category.map((item, index) => {
                                         return <option value={item.maDanhMuc} key={index}>{item.maDanhMuc}</option>
@@ -347,10 +309,14 @@ export default function ModalComponent(props) {
                         </Form>)}
 
                 </Formik>
-            </Modal>)
+            </Modal>
+            )
         case 'newUser':
-            return (<Modal show={newUserModal} onHide={handleNewUserClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Thêm người dùng mới</h1><img src="./img/close.svg" alt="close button" onClick={handleEditCourseClose} /></div>
+            return (<Modal show={newUserModal} onHide={() => handleModalClose('newUser')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Thêm người dùng mới</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('newUser')} />
+                </div>
                 <Formik
                     initialValues={{
                         taiKhoan: '',
@@ -372,7 +338,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.taiKhoan)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -382,7 +348,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.email)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -392,7 +358,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.matKhau)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -402,7 +368,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.hoTen)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -412,7 +378,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.soDT)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -422,7 +388,7 @@ export default function ModalComponent(props) {
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.maLoaiNguoiDung)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                     {userType.map((item, index) => {
                                         return <option value={item.maLoaiNguoiDung} key={index}>{item.tenLoaiNguoiDung}</option>
@@ -436,8 +402,11 @@ export default function ModalComponent(props) {
             </Modal>
             )
         case 'editUser':
-            return (<Modal show={editUserModal} onHide={handleEditUserClose} centered size="sm">
-                <div className="d-flex justify-content-between mb-4"><h1 className="modal-title">Chỉnh sửa người dùng</h1><img src="./img/close.svg" alt="close button" onClick={handleEditUserClose} /></div>
+            return (<Modal show={editUserModal} onHide={() => handleModalClose('editUser')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Chỉnh sửa người dùng</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('editUser')} />
+                </div>
                 <Formik
                     initialValues={{
                         taiKhoan: userEditing.taiKhoan,
@@ -459,7 +428,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.taiKhoan)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -469,7 +438,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.email)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -479,7 +448,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.matKhau)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -489,7 +458,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.hoTen)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -499,7 +468,7 @@ export default function ModalComponent(props) {
                                     &&
                                     <OverlayTrigger
                                         overlay={renderTooltip(errors.soDT)}>
-                                        <img src="./img/error.svg" alt="error warning" />
+                                        <img src={errorSvg} alt="error warning" />
                                     </OverlayTrigger>}
                             </div>
                             <div className="inputGroup">
@@ -509,7 +478,7 @@ export default function ModalComponent(props) {
                                         &&
                                         <OverlayTrigger
                                             overlay={renderTooltip(errors.maLoaiNguoiDung)}>
-                                            <img src="./img/error.svg" alt="error warning" />
+                                            <img src={errorSvg} alt="error warning" />
                                         </OverlayTrigger>}
                                     {userType.map((item, index) => {
                                         return <option value={item.maLoaiNguoiDung} key={index}>{item.tenLoaiNguoiDung}</option>
@@ -522,8 +491,136 @@ export default function ModalComponent(props) {
                 </Formik>
             </Modal>
             )
+        case 'signIn':
+            return (<Modal show={signInModal} onHide={() => handleModalClose('signIn')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Đăng nhập</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('signIn')} />
+                </div>
+
+                <Formik
+                    initialValues={{
+                        username: '',
+                        password: '',
+                    }}
+                    validationSchema={signInSchema}
+                    onSubmit={signIn}>
+
+                    {({ errors, touched }) => (
+                        <Form>
+                            <div className="inputGroup">
+                                <Field style={{ color: errors.username ? '#eb5757' : 'unset' }} name="username" type="text" placeholder="Tên đăng nhập" />
+                                {errors.username
+                                    && touched.username
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.username)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+                            <div className="inputGroup">
+                                <Field name="password" type="password" placeholder="Mật khẩu" />
+                                {errors.password
+                                    && touched.password
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.password)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+                            <button className="brownSolidBtn" type="submit" style={{ width: '100%', margin: 0 }}>Đăng nhập</button>
+                            <p>Chưa có tài khoản? <b onClick={switchModal}>Đăng ký</b></p>
+                        </Form>)}
+                </Formik>
+            </Modal>
+            )
+        case 'signUp':
+            return (<Modal show={signUpModal} onHide={() => handleModalClose('signUp')} centered size="sm">
+                <div className="modalTitleBox">
+                    <h1 className="modal-title">Đăng ký</h1>
+                    <img src={closeSvg} alt="close button" onClick={() => handleModalClose('signUp')} />
+                </div>
+                <Formik
+                    initialValues={{
+                        phoneNumber: '',
+                        email: '',
+                        username: '',
+                        fullName: '',
+                        password: '',
+                        termsAndConditions: false,
+                    }}
+                    validationSchema={signUpSchema}
+                    onSubmit={signUp}>
+                    {({ errors, touched }) => (
+                        <Form>
+                            <div className="inputGroup">
+                                <Field type="text" style={{ color: errors.phoneNumber ? '#eb5757' : 'unset' }} placeholder="Số điện thoại" name="phoneNumber" />
+                                {errors.phoneNumber
+                                    && touched.phoneNumber
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.phoneNumber)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+
+                            <div className="inputGroup">
+                                <Field type="text" style={{ color: errors.email ? '#eb5757' : 'unset' }} placeholder="Email" name="email" />
+                                {errors.email
+                                    && touched.email
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.email)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+
+                            <div className="inputGroup">
+                                <Field type="text" style={{ color: errors.fullName ? '#eb5757' : 'unset' }} placeholder="Họ và tên" name="fullName" />
+                                {errors.fullName
+                                    && touched.fullName
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.fullName)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+
+                            <div className="inputGroup">
+                                <Field type="text" style={{ color: errors.username ? '#eb5757' : 'unset' }} placeholder="Tên đăng nhập" name="username" />
+                                {errors.username
+                                    && touched.username
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.username)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+
+                            <div className="inputGroup">
+                                <Field type="password" placeholder="Mật khẩu" name="password" />
+                                {errors.password
+                                    && touched.password
+                                    &&
+                                    <OverlayTrigger
+                                        overlay={renderTooltip(errors.password)}>
+                                        <img src={errorSvg} alt="error warning" />
+                                    </OverlayTrigger>}
+                            </div>
+
+                            <div className="d-flex">
+                                <Field type="checkbox" name="termsAndConditions" id="termsAndConditions" />
+                                <label htmlFor="termsAndConditions" style={{ color: errors.termsAndConditions ? '#eb5757' : 'unset' }}> Tôi đồng ý với <b>điều khoản</b> và <b>điều kiện</b> sử dụng dịch vụ</label><br />
+                            </div>
+                            <div>
+                                <button className="brownSolidBtn" style={{ width: '100%', margin: 0 }}>Đăng ký</button>
+                                <p>Đã có tài khoản? <b onClick={switchModal}>Đăng nhập</b></p>
+                            </div>
+                        </Form>)}
+                </Formik>
+            </Modal>
+            )
         default:
             return 'nothing';
     }
-
 }

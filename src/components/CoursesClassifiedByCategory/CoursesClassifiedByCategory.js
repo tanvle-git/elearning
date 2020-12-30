@@ -27,7 +27,7 @@ export default function CoursesClassifiedByCategory() {
         <Fragment>
             <div className="coursesClassifiedByCategory">
                 <div className="container">
-                    <h1 className="title" style={{ marginLeft: 23 }}>Khóa học theo danh mục</h1>
+                    <h1 className="title">Khóa học theo danh mục</h1>
                     {tabRender()}
                 </div>
             </div>

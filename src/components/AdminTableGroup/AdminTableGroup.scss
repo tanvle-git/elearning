@@ -1,0 +1,23 @@
+.managementPanel {
+    border-radius: 20px;
+    background-color: white;
+    padding: 0 30px 30px 30px;
+    margin-top: 30px;
+    box-sizing: border-box;
+    .tableContainer{
+        max-height: 400px;
+        overflow-y: scroll;
+        margin: 0;
+    }
+}
+
+@media screen and(max-width: 360px) {
+    .managementPanel {
+        border-radius: 20px;
+        background-color: transparent;
+        padding: 0;
+        td {
+            padding: 15px 0;
+        }
+    }
+}

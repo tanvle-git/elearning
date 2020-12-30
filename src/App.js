@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './assets/Reset.scss'
 import Home from './pages/Home/Home';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import "slick-carousel/slick/slick.css";

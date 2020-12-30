@@ -66,7 +66,7 @@ export const getUserInfoAction = () => {
             Authorization: bearer
         },
         data: {
-            taiKhoan: username.taiKhoan,
+            taiKhoan: username?.taiKhoan,
         }
     }).then(res => {
         if (res.status === 200) {

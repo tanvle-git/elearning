@@ -1,0 +1,26 @@
+.subInfo{
+    height: 35px;
+    padding: 0px 7px;
+    margin-bottom: 7px;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    .subInfoItem{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border: .5px solid #645A5333;
+        border-radius: 20px;
+        max-width: 150px;
+        img{
+            width: 20px;
+            height: 20px;
+        }
+        .subInfoText{
+            line-height: 100%;
+            color: #645A53cc;
+            margin-left: 15px;
+        }
+    }
+}

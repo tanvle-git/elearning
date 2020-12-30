@@ -7,13 +7,15 @@ import { setModal } from '../../redux/actions/UserSettingActions';
 import { joinCourseAction, cancelCourseAction, getCourseUsersDetailAction } from '../../redux/actions/UserAction'
 import TopCourses from '../../components/TopCourses/TopCourses';
 import SubInfo from '../../components/SubInfo/SubInfo';
-import '../../components/Buttons/Button.scss'
+// import '../../components/Button/Button.scss'
+// import '../../assets/Button.scss'
 import AdminTableGroup from '../../components/AdminTableGroup/AdminTableGroup';
 
 export default function Detail(props) {
+    window.scrollTo(0, 0);
     const userInfo = useSelector(state => state.UserReducer.userInfo)
     const joinedCourses = useSelector(state => state.CoursesReducer.joinedCourses);
-    const courseDetail  = useSelector(state => state.CoursesReducer.courseDetail);
+    const courseDetail = useSelector(state => state.CoursesReducer.courseDetail);
     const haveNotJoined = useSelector(state => state.UserReducer.courseUsersDetail.haveNotJoined);
     const pendingCourses = useSelector(state => state.UserReducer.courseUsersDetail.pendingCourses);
     const haveJoined = useSelector(state => state.UserReducer.courseUsersDetail.haveJoined);
@@ -40,9 +42,10 @@ export default function Detail(props) {
     }
 
     const renderRedButton = () => {
-        if (userInfo.taiKhoan === undefined) {
+        if (userInfo.maLoaiNguoiDung === 'GV') {
+            return <button className="brownOutlineBtn mediumBtn" disabled={true}>Admin không được ghi danh</button>
+        } else if (userInfo.taiKhoan === undefined) {
             return <button className="redSolidBtn mediumBtn" onClick={() => handleSignInModal()}>Đăng nhập</button>
-
         } else if (joinedCourses.findIndex(x => x.maKhoaHoc === courseDetail.maKhoaHoc) !== -1) {
             return <button className="redSolidBtn mediumBtn" onClick={() => cancelCourse()}>Hủy ghi danh</button>
         } else {
@@ -63,7 +66,7 @@ export default function Detail(props) {
                                 {courseDetail?.tenKhoaHoc}
                             </h1>
                             <p>
-                            Ngày tạo: {courseDetail?.ngayTao} <br />
+                                Ngày tạo: {courseDetail?.ngayTao} <br />
                             Tạo bởi: {courseDetail?.nguoiTao?.hoTen} - {courseDetail?.nguoiTao?.tenLoaiNguoiDung} <br />
                             Danh mục: {courseDetail?.danhMucKhoaHoc?.tenDanhMucKhoaHoc}
                             </p>
@@ -71,7 +74,7 @@ export default function Detail(props) {
                         <div className="bottomContent">
                             <h1 className="title">
                                 Mô tả
-                        </h1>
+                            </h1>
                             <p>
                                 {courseDetail?.moTa}
                             </p>
@@ -84,9 +87,7 @@ export default function Detail(props) {
                     </div>
                     <div className="col-md-5 col-lg-4 col-xl-3">
                         <div className="cardDetail">
-                            <img src={courseDetail?.hinhAnh} alt={courseDetail?.tenKhoaHoc} width="100%" />
-
-
+                            <img src={courseDetail?.hinhAnh} alt={courseDetail?.tenKhoaHoc} width="100%" style={{ marginBottom: '15px' }} />
                             <div className="d-flex flex-column" style={{ margin: ' 7.5px 30px 15px 30px' }}>
                                 <SubInfo luotXem={courseDetail?.luotXem} soLuongHocVien={courseDetail?.soLuongHocVien} />
                                 {renderRedButton()}

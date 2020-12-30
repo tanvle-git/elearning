@@ -3,28 +3,34 @@ footer {
     background-color: white;
     border-top: 1px solid #dee2e6;
     z-index: 10;
-}
-
-.companyInfo {
-    padding: 0 42px;
-    margin-top: 42px;
-    color: #a2a2a2;
-    line-height: 2;
-}
-
-.companyInfo div img {
-    width: 50px;
-}
-
-.companyInfo p {
-    margin: 0;
-}
-/* .companyInfo div {
-    margin: auto;
-} */
-.copyright {
-    padding: 15px;
-    color: #a2a2a2;
+    .row {
+        align-items: center;
+        .companyInfo {
+            padding: 0 42px;
+            margin-top: 42px;
+            color: #a2a2a2;
+            line-height: 2;
+            p {
+                margin: 0;
+            }
+            span {
+                text-align: center;
+            }
+            .socialNetwork {
+                text-align: center;
+                margin-top: 1rem;
+            }
+            img {
+                width: 50px;
+            }
+        }
+    }
+    .copyright {
+        padding: 15px;
+        color: #a2a2a2;
+        text-align: center;
+        margin: 0;
+    }
 }
 
 hr {
@@ -32,8 +38,6 @@ hr {
     margin-top: 42px;
 }
 
-*:focus{
-    // box-shadow: 0 0 0pt 1pt white;
+*:focus {
     outline: none;
 }
-

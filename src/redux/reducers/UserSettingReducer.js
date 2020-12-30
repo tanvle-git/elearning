@@ -20,6 +20,7 @@ const stateSetting = {
         editCourse: false,
         newUser: false,
         editUser: false,
+        filter:false,
     },
 }
 
@@ -60,15 +61,21 @@ const UserSettingReducer = (state = stateSetting, action) => {
                 signUp: false,
                 newCourse: false,
                 editCourse: false,
+                newUser: false,
+                editUser: false,
+                filter:false,
             };
             return { ...state }
         }
         case SIGN_UP: {
             state.modal = {
-                signIn: true,
+                signIn: false,
                 signUp: false,
                 newCourse: false,
                 editCourse: false,
+                newUser: false,
+                editUser: false,
+                filter:false,
             };
             return { ...state }
         }
